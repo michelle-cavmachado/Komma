@@ -1,0 +1,121 @@
+{
+  "$comment": "Komma standalone design tokens. Two tiers: primitive (raw values from Design System v3) and komma (semantic, intent-named). Pages reference only komma.* semantics. Mirror of komma-tokens.css for build tooling, type generation, or Figma Tokens import. Source of truth = code.",
+
+  "primitive": {
+    "surface": { "pageBg": "#F6F6F6", "s0": "#FAFAFA", "s1": "#F1F1EF", "s2": "#F1F1EF" },
+    "divider": {
+      "soft": "rgba(28,28,30,0.05)",
+      "default": "rgba(28,28,30,0.09)",
+      "strong": "rgba(28,28,30,0.14)"
+    },
+    "ink": { "t1": "#1E1E1D", "t2": "#6E6E6A", "t3": "#9A9A96", "ink90": "#2A2A28", "ink80": "#3B3B39", "light": "#C6C6C2" },
+    "brand": { "base": "#29283E", "hover": "#1F1E30", "bg": "#ECECF1", "border": "#D6D6E0", "accentLight": "#9B99C4" },
+    "status": {
+      "ok":   { "fg": "#057F34", "bg": "#E6F4EC", "border": "#A7D8BB" },
+      "warn": { "fg": "#A06000", "bg": "#FDF3E0", "border": "#E8CFA0" },
+      "crit": { "fg": "#C11806", "bg": "#F7E9E6", "border": "#E0BBB4" },
+      "info": { "fg": "#455FE4", "bg": "#ECEFFD", "border": "#C2CCF8" }
+    },
+    "glass": { "bg": "rgba(250,250,250,0.65)", "pill": "rgba(255,255,255,0.72)" },
+    "font": {
+      "sans": "'Inter', system-ui, sans-serif",
+      "display": "'Inter Tight', system-ui, sans-serif",
+      "serif": "'Source Serif 4', Georgia, serif"
+    },
+    "radius": { "r4": "4px", "r8": "8px", "r12": "12px", "r16": "16px" },
+    "shadow": "0 1px 2px rgba(30,30,30,.025), 0 8px 26px rgba(30,30,30,.05)"
+  },
+
+  "komma": {
+    "text": {
+      "primary": "{primitive.ink.t1}", "secondary": "{primitive.ink.t2}",
+      "tertiary": "{primitive.ink.t3}", "disabled": "{primitive.ink.light}"
+    },
+    "surface": {
+      "page": "{primitive.surface.pageBg}", "card": "{primitive.surface.s0}",
+      "sunken": "{primitive.surface.s1}", "muted": "{primitive.surface.s2}",
+      "overlay": "{primitive.glass.bg}", "pill": "{primitive.glass.pill}"
+    },
+    "divider": {
+      "$comment": "Separator lines between rows/sections.",
+      "soft": "{primitive.divider.soft}", "default": "{primitive.divider.default}",
+      "strong": "{primitive.divider.strong}"
+    },
+    "border": {
+      "$comment": "Card/input outlines — same values as divider, different intent.",
+      "soft": "{primitive.divider.soft}", "default": "{primitive.divider.default}",
+      "strong": "{primitive.divider.strong}"
+    },
+    "action": {
+      "primary": "{primitive.brand.base}", "primaryHover": "{primitive.brand.hover}",
+      "primaryBg": "{primitive.brand.bg}", "primaryBorder": "{primitive.brand.border}",
+      "accent": "{primitive.brand.accentLight}"
+    },
+    "status": {
+      "success":  { "fg": "{primitive.status.ok.fg}",   "bg": "{primitive.status.ok.bg}",   "border": "{primitive.status.ok.border}" },
+      "warning":  { "fg": "{primitive.status.warn.fg}", "bg": "{primitive.status.warn.bg}", "border": "{primitive.status.warn.border}" },
+      "critical": { "fg": "{primitive.status.crit.fg}", "bg": "{primitive.status.crit.bg}", "border": "{primitive.status.crit.border}" },
+      "info":     { "fg": "{primitive.status.info.fg}", "bg": "{primitive.status.info.bg}", "border": "{primitive.status.info.border}" }
+    },
+
+    "module": {
+      "$comment": "Module semantics alias generic status so a status change cascades to every module.",
+      "anomaly": {
+        "open":            { "fg": "{komma.status.warning.fg}", "bg": "{komma.status.warning.bg}", "border": "{komma.status.warning.border}" },
+        "changesDetected": { "fg": "{komma.status.info.fg}",    "bg": "{komma.status.info.bg}",    "border": "{komma.status.info.border}" },
+        "fixed":           { "fg": "{komma.status.success.fg}", "bg": "{komma.status.success.bg}", "border": "{komma.status.success.border}" }
+      },
+      "benchmark": {
+        "above":   { "$band": ">=75",    "value": "{komma.status.success.fg}" },
+        "inline":  { "$band": "25-74",   "value": "{komma.status.warning.fg}" },
+        "below":   { "$band": "<25",     "value": "{komma.status.critical.fg}" },
+        "missing": { "$band": "no data", "value": "{primitive.ink.light}" }
+      },
+      "liquidity": {
+        "healthy":  "{komma.status.success.fg}",
+        "tight":    "{komma.status.warning.fg}",
+        "negative": "{komma.status.critical.fg}"
+      },
+      "budget": {
+        "onTrack": "{komma.status.success.fg}",
+        "watch":   "{komma.status.warning.fg}",
+        "over":    "{komma.status.critical.fg}",
+        "draft":   "{komma.text.tertiary}"
+      },
+      "overview": {
+        "ok":        "{komma.status.success.fg}",
+        "attention": "{komma.status.warning.fg}",
+        "urgent":    "{komma.status.critical.fg}"
+      },
+      "copilot": {
+        "surface": "{primitive.surface.s1}",
+        "accent":  "{primitive.brand.base}",
+        "border":  "{primitive.divider.default}",
+        "aiTint":  "{komma.status.info.bg}"
+      }
+    },
+
+    "font": {
+      "$comment": "sans = Inter (all UI text AND all in-table/inline numbers); display = Inter Tight (ONLY large KPI/metric figures: metricMd/Lg/Xl, and display headings).",
+      "sans": "{primitive.font.sans}", "display": "{primitive.font.display}",
+      "serif": "{primitive.font.serif}"
+    },
+    "fontSize": {
+      "$comment": "Tokens < 12px (caps) MUST render uppercase via text-transform. h3 MUST always be semibold (600), never regular. metric* use display font (Inter Tight).",
+      "caps": "10px", "small": "12px", "body": "14px",
+      "h3": "16px", "h2": "20px", "h1": "24px",
+      "metricMd": "20px", "metricLg": "24px", "metricXl": "28px"
+    },
+    "case": { "caps": "uppercase" },
+    "lineHeight": 1.2,
+    "fontWeight": { "regular": 400, "medium": 500, "semibold": 600, "bold": 700 },
+    "radius": { "sm": "{primitive.radius.r4}", "md": "{primitive.radius.r8}", "lg": "{primitive.radius.r12}", "xl": "{primitive.radius.r16}" },
+    "space": { "1": "4px", "2": "8px", "3": "10px", "4": "12px", "5": "16px", "6": "24px" },
+    "shadow": { "card": "{primitive.shadow}" },
+    "layout": {
+      "pagePadding": "24px", "cardPadding": "16px", "cardGap": "16px",
+      "headerHeight": "56px", "filterbarHeight": "40px",
+      "copilotWidth": "420px", "rowHeight": "40px"
+    }
+  }
+}

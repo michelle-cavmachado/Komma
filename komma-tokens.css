@@ -1,0 +1,222 @@
+/* ============================================================
+   KOMMA DESIGN TOKENS  (standalone — no external dependency)
+   ------------------------------------------------------------
+   Two tiers:
+   1. PRIMITIVES  — raw values (extracted from Design System v3).
+                    Devs never reference these directly in a page.
+   2. SEMANTICS   — intent-named tokens. Pages/components use
+                    ONLY these. Change a primitive once -> every
+                    page updates.
+
+   Rule for devs: no raw hex / px in page or component code.
+   Reference --komma-* semantic tokens only.
+   ============================================================ */
+
+:root {
+
+  /* ========================================================
+     TIER 1 — PRIMITIVES  (do not reference directly in pages)
+     ======================================================== */
+
+  /* Surfaces */
+  --p-page-bg:   #F6F6F6;
+  --p-s0:        #FAFAFA;
+  --p-s1:        #F1F1EF;
+  --p-s2:        #F1F1EF;
+
+  /* Dividers / borders (shared values, split by intent in semantic layer) */
+  --p-divider-soft:   rgba(28,28,30,0.05);
+  --p-divider:        rgba(28,28,30,0.09);
+  --p-divider-strong: rgba(28,28,30,0.14);
+
+  /* Text / ink */
+  --p-t1:    #1E1E1D;
+  --p-t2:    #6E6E6A;
+  --p-t3:    #9A9A96;
+  --p-ink90: #2A2A28;
+  --p-ink80: #3B3B39;
+  --p-light: #C6C6C2;
+
+  /* Brand */
+  --p-brand:        #29283E;
+  --p-brand-h:      #1F1E30;
+  --p-brand-bg:     #ECECF1;
+  --p-brand-b:      #D6D6E0;
+  --p-accent-light: #9B99C4;
+
+  /* Status families (each: fg / bg / border) */
+  --p-ok:    #057F34;  --p-ok-bg:   #E6F4EC;  --p-ok-b:   #A7D8BB;
+  --p-warn:  #A06000;  --p-warn-bg: #FDF3E0;  --p-warn-b: #E8CFA0;
+  --p-crit:  #C11806;  --p-crit-bg: #F7E9E6;  --p-crit-b: #E0BBB4;
+  --p-info:  #455FE4;  --p-info-bg: #ECEFFD;  --p-info-b: #C2CCF8;
+
+  /* Glass (overlays / floating pills) */
+  --p-glass-bg:   rgba(250,250,250,0.65);
+  --p-glass-pill: rgba(255,255,255,0.72);
+
+  /* Type families */
+  --p-sans:    'Inter', system-ui, sans-serif;
+  --p-display: 'Inter Tight', system-ui, sans-serif;
+  --p-serif:   'Source Serif 4', Georgia, serif;
+
+  /* Radii */
+  --p-r4:  4px;
+  --p-r8:  8px;
+  --p-r12: 12px;
+  --p-r16: 16px;
+
+  /* Shadow */
+  --p-shadow: 0 1px 2px rgba(30,30,30,.025), 0 8px 26px rgba(30,30,30,.05);
+
+  /* ========================================================
+     TIER 2 — SEMANTIC TOKENS  (pages use ONLY these)
+     ======================================================== */
+
+  /* --- Text --- */
+  --komma-text-primary:    var(--p-t1);
+  --komma-text-secondary:  var(--p-t2);
+  --komma-text-tertiary:   var(--p-t3);
+  --komma-text-disabled:   var(--p-light);
+
+  /* --- Surfaces --- */
+  --komma-surface-page:    var(--p-page-bg);
+  --komma-surface-card:    var(--p-s0);
+  --komma-surface-sunken:  var(--p-s1);
+  --komma-surface-muted:   var(--p-s2);
+  --komma-surface-overlay: var(--p-glass-bg);
+  --komma-surface-pill:    var(--p-glass-pill);
+
+  /* --- Dividers (separator lines between rows/sections) --- */
+  --komma-divider-soft:   var(--p-divider-soft);
+  --komma-divider:        var(--p-divider);
+  --komma-divider-strong: var(--p-divider-strong);
+
+  /* --- Borders (card/input outlines — same values, different intent) --- */
+  --komma-border-soft:    var(--p-divider-soft);
+  --komma-border:         var(--p-divider);
+  --komma-border-strong:  var(--p-divider-strong);
+
+  /* --- Actions / brand --- */
+  --komma-action-primary:       var(--p-brand);
+  --komma-action-primary-hover: var(--p-brand-h);
+  --komma-action-primary-bg:    var(--p-brand-bg);
+  --komma-action-primary-border:var(--p-brand-b);
+  --komma-accent:               var(--p-accent-light);
+
+  /* --- Status (generic, used across ALL modules) --- */
+  --komma-status-success:        var(--p-ok);
+  --komma-status-success-bg:     var(--p-ok-bg);
+  --komma-status-success-border: var(--p-ok-b);
+  --komma-status-warning:        var(--p-warn);
+  --komma-status-warning-bg:     var(--p-warn-bg);
+  --komma-status-warning-border: var(--p-warn-b);
+  --komma-status-critical:       var(--p-crit);
+  --komma-status-critical-bg:    var(--p-crit-bg);
+  --komma-status-critical-border:var(--p-crit-b);
+  --komma-status-info:           var(--p-info);
+  --komma-status-info-bg:        var(--p-info-bg);
+  --komma-status-info-border:    var(--p-info-b);
+
+  /* ========================================================
+     MODULE SEMANTICS  (built ON TOP of generic status —
+     so a status colour change cascades everywhere)
+     ======================================================== */
+
+  /* --- Controlling: anomaly states (open / changes_detected / fixed) --- */
+  --komma-anomaly-open:           var(--komma-status-warning);
+  --komma-anomaly-open-bg:        var(--komma-status-warning-bg);
+  --komma-anomaly-open-border:    var(--komma-status-warning-border);
+  --komma-anomaly-changes:        var(--komma-status-info);
+  --komma-anomaly-changes-bg:     var(--komma-status-info-bg);
+  --komma-anomaly-changes-border: var(--komma-status-info-border);
+  --komma-anomaly-fixed:          var(--komma-status-success);
+  --komma-anomaly-fixed-bg:       var(--komma-status-success-bg);
+  --komma-anomaly-fixed-border:   var(--komma-status-success-border);
+
+  /* --- Financial: benchmark percentile bands --- */
+  /* above >=75 / in line 25-74 / below <25 / missing = no data */
+  --komma-benchmark-above:   var(--komma-status-success);
+  --komma-benchmark-inline:  var(--komma-status-warning);
+  --komma-benchmark-below:   var(--komma-status-critical);
+  --komma-benchmark-missing: var(--p-light);
+
+  /* --- Liquidity: cash position signalling --- */
+  --komma-liquidity-healthy:  var(--komma-status-success);
+  --komma-liquidity-tight:    var(--komma-status-warning);
+  --komma-liquidity-negative: var(--komma-status-critical);
+
+  /* --- Budget: actual-vs-plan variance --- */
+  --komma-budget-on-track: var(--komma-status-success);
+  --komma-budget-watch:    var(--komma-status-warning);
+  --komma-budget-over:     var(--komma-status-critical);
+  --komma-budget-draft:    var(--komma-text-tertiary);
+
+  /* --- Overview: portfolio client health rollup --- */
+  --komma-overview-ok:        var(--komma-status-success);
+  --komma-overview-attention: var(--komma-status-warning);
+  --komma-overview-urgent:    var(--komma-status-critical);
+
+  /* --- CoPilot: one global advisory surface (all modules) --- */
+  --komma-copilot-surface: var(--p-s1);
+  --komma-copilot-accent:  var(--p-brand);
+  --komma-copilot-border:  var(--p-divider);
+  --komma-copilot-ai-tint: var(--komma-status-info-bg);
+
+  /* ========================================================
+     TYPOGRAPHY SCALE
+     ======================================================== */
+  --komma-font-sans:    var(--p-sans);   /* Inter — all UI text AND all in-table/inline numbers */
+  --komma-font-display: var(--p-display);/* Inter Tight — ONLY large KPI/metric figures (metric-md/lg/xl) and display headings */
+  --komma-font-serif:   var(--p-serif);
+
+  /* Sizes. Tokens < 12px MUST render uppercase (apply --komma-case-caps). */
+  --komma-text-caps:    10px;  /* micro labels, tags, eyebrows — ALWAYS uppercase */
+  --komma-text-small:   12px;  /* supporting text, captions */
+  --komma-text-body:    14px;  /* body + inputs (default) */
+  --komma-text-h3:      16px;  /* ALWAYS semibold (600) — never regular; only 2px above body so weight is essential */
+  --komma-text-h2:      20px;
+  --komma-text-h1:      24px;
+  --komma-metric-md:    20px;  /* secondary KPI figure — Inter Tight (display font) */
+  --komma-metric-lg:    24px;  /* hero KPI figure — Inter Tight (display font) */
+  --komma-metric-xl:    28px;  /* single big number (liquidity/overview) — Inter Tight (display font) */
+
+  /* Line height (single value — applies to all UI text across the scale) */
+  --komma-line-height: 1.2;
+
+  /* Casing helper for sub-12px tokens */
+  --komma-case-caps: uppercase;
+
+  /* Weights (canonical set — don't introduce others) */
+  --komma-weight-regular:  400;
+  --komma-weight-medium:   500;
+  --komma-weight-semibold: 600;
+  --komma-weight-bold:     700;
+
+  /* ========================================================
+     SHAPE, SPACING, SHADOW
+     ======================================================== */
+  --komma-radius-sm: var(--p-r4);
+  --komma-radius-md: var(--p-r8);
+  --komma-radius-lg: var(--p-r12);
+  --komma-radius-xl: var(--p-r16);
+
+  --komma-space-1: 4px;
+  --komma-space-2: 8px;
+  --komma-space-3: 10px;
+  --komma-space-4: 12px;
+  --komma-space-5: 16px;
+  --komma-space-6: 24px;
+
+  --komma-shadow-card: var(--p-shadow);
+
+  /* ========================================================
+     LAYOUT — page-structure contract (values)
+     ======================================================== */
+  --komma-page-padding:     var(--komma-space-6);
+  --komma-card-padding:     var(--komma-space-5);
+  --komma-card-gap:         var(--komma-space-5);
+  --komma-header-height:    56px;
+  --komma-filterbar-height: 40px;
+  --komma-copilot-width:    420px;
+  --komma-row-height:       40px;
+}

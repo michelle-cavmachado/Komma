@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Komma · Page Structure Guide</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ══════════════════════════════════════════════════════════════
+   KOMMA TOKENS  (tier 1 + tier 2 — mirrors komma-tokens.css)
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  /* Tier 1 — primitives */
+  --p-page-bg:#F6F6F6; --p-s0:#FAFAFA; --p-s1:#F1F1EF; --p-s2:#F1F1EF;
+  --p-divider-soft:rgba(28,28,30,.05); --p-divider:rgba(28,28,30,.09); --p-divider-strong:rgba(28,28,30,.14);
+  --p-t1:#1E1E1D; --p-t2:#6E6E6A; --p-t3:#9A9A96; --p-light:#C6C6C2;
+  --p-brand:#29283E; --p-brand-h:#1F1E30; --p-brand-bg:#ECECF1; --p-brand-b:#D6D6E0; --p-accent-light:#9B99C4;
+  --p-ok:#057F34; --p-ok-bg:#E6F4EC; --p-ok-b:#A7D8BB;
+  --p-warn:#A06000; --p-warn-bg:#FDF3E0; --p-warn-b:#E8CFA0;
+  --p-crit:#C11806; --p-crit-bg:#F7E9E6; --p-crit-b:#E0BBB4;
+  --p-info:#455FE4; --p-info-bg:#ECEFFD; --p-info-b:#C2CCF8;
+  --p-sans:'Inter',system-ui,sans-serif;
+  --p-display:'Inter Tight',system-ui,sans-serif;
+  --p-serif:'Source Serif 4',Georgia,serif;
+  --p-r4:4px; --p-r8:8px; --p-r12:12px; --p-r16:16px;
+  --p-shadow:0 1px 2px rgba(30,30,30,.025),0 8px 26px rgba(30,30,30,.05);
+
+  /* Tier 2 — semantics (pages reference ONLY these) */
+  --komma-text-primary:var(--p-t1); --komma-text-secondary:var(--p-t2);
+  --komma-text-tertiary:var(--p-t3); --komma-text-disabled:var(--p-light);
+  --komma-surface-page:var(--p-page-bg); --komma-surface-card:var(--p-s0);
+  --komma-surface-sunken:var(--p-s1); --komma-surface-muted:var(--p-s2);
+  --komma-divider-soft:var(--p-divider-soft); --komma-divider:var(--p-divider);
+  --komma-divider-strong:var(--p-divider-strong);
+  --komma-border-soft:var(--p-divider-soft); --komma-border:var(--p-divider);
+  --komma-border-strong:var(--p-divider-strong);
+  --komma-action-primary:var(--p-brand); --komma-action-primary-hover:var(--p-brand-h);
+  --komma-action-primary-bg:var(--p-brand-bg); --komma-action-primary-border:var(--p-brand-b);
+  --komma-accent:var(--p-accent-light);
+  --komma-status-success:var(--p-ok); --komma-status-success-bg:var(--p-ok-bg); --komma-status-success-border:var(--p-ok-b);
+  --komma-status-warning:var(--p-warn); --komma-status-warning-bg:var(--p-warn-bg); --komma-status-warning-border:var(--p-warn-b);
+  --komma-status-critical:var(--p-crit); --komma-status-critical-bg:var(--p-crit-bg); --komma-status-critical-border:var(--p-crit-b);
+  --komma-status-info:var(--p-info); --komma-status-info-bg:var(--p-info-bg); --komma-status-info-border:var(--p-info-b);
+  --komma-font-sans:var(--p-sans); --komma-font-display:var(--p-display); --komma-font-serif:var(--p-serif);
+  --komma-text-caps:10px; --komma-text-small:12px; --komma-text-body:14px;
+  --komma-text-h3:16px; --komma-text-h2:20px; --komma-text-h1:24px;
+  --komma-metric-md:20px; --komma-metric-lg:24px; --komma-metric-xl:28px;
+  --komma-line-height:var(--komma-line-height);
+  --komma-case-caps:uppercase;
+  --komma-weight-regular:400; --komma-weight-medium:500; --komma-weight-semibold:600; --komma-weight-bold:700;
+  --komma-radius-sm:var(--p-r4); --komma-radius-md:var(--p-r8); --komma-radius-lg:var(--p-r12); --komma-radius-xl:var(--p-r16);
+  --komma-space-1:4px; --komma-space-2:8px; --komma-space-3:10px; --komma-space-4:12px; --komma-space-5:16px; --komma-space-6:24px;
+  --komma-shadow-card:var(--p-shadow);
+  --komma-page-padding:24px; --komma-card-padding:16px; --komma-card-gap:16px;
+  --komma-header-height:56px; --komma-row-height:40px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GUIDE SHELL
+   ══════════════════════════════════════════════════════════════ */
+html, body { height:100%; font-family:var(--komma-font-sans); background:#DCDCDA; color:var(--komma-text-primary); }
+body { display:flex; overflow:hidden; }
+
+/* ══════════════════════════════════════════════════════════════
+   CONTROL PANEL (left sidebar)
+   ══════════════════════════════════════════════════════════════ */
+.panel {
+  width:284px; flex-shrink:0;
+  background:#fff; border-right:1px solid var(--komma-border);
+  display:flex; flex-direction:column; height:100vh;
+  z-index:10;
+}
+
+.panel-head {
+  padding:14px 18px; flex-shrink:0;
+  background:var(--p-brand); color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.panel-head .p-logo { font-size:15px; font-weight:600; letter-spacing:-0.02em; }
+.panel-head .p-logo em { font-style:normal; opacity:.4; font-weight:400; }
+.panel-head .p-sub { margin-top:3px; font-size:10px; opacity:.45; letter-spacing:.06em; text-transform:uppercase; }
+
+.panel-scroll { flex:1; overflow-y:auto; }
+
+.group { border-bottom:1px solid var(--komma-border); }
+
+.group-head {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 18px 7px; cursor:pointer; user-select:none;
+}
+.g-badge {
+  width:18px; height:18px; border-radius:50%;
+  background:var(--p-brand-bg); color:var(--p-brand);
+  font-size:9px; font-weight:700; font-style:normal;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; letter-spacing:0;
+}
+.g-title { font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--komma-text-secondary); }
+.g-arrow { margin-left:auto; opacity:.3; transition:transform .15s; }
+.group.collapsed .g-arrow { transform:rotate(-90deg); }
+.group.collapsed .group-items { display:none; }
+.group-items { padding:0 18px 12px; }
+
+.ctrl { margin-top:10px; }
+.ctrl-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+.ctrl-name { font-size:12px; font-weight:500; color:var(--komma-text-primary); }
+.ctrl-tok {
+  font-size:10px; font-family:ui-monospace,monospace;
+  color:var(--p-accent-light); background:var(--p-brand-bg);
+  padding:2px 5px; border-radius:3px;
+  max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+
+select {
+  width:100%; height:30px;
+  border:1px solid var(--komma-border-strong); border-radius:var(--komma-radius-sm);
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239A9A96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;
+  font-family:var(--komma-font-sans); font-size:12px; color:var(--komma-text-primary);
+  padding:0 24px 0 8px; cursor:pointer; outline:none;
+  appearance:none; -webkit-appearance:none;
+}
+select:focus { border-color:var(--p-brand); box-shadow:0 0 0 2px var(--p-brand-bg); }
+
+.panel-foot {
+  padding:10px 18px; border-top:1px solid var(--komma-border); flex-shrink:0;
+  display:flex; align-items:center; gap:8px;
+}
+.tog-wrap { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--komma-text-secondary); cursor:pointer; user-select:none; }
+.tog { width:30px; height:16px; border-radius:8px; background:var(--komma-border-strong); position:relative; transition:background .15s; flex-shrink:0; }
+.tog.on { background:var(--p-brand); }
+.tog::after { content:''; width:12px; height:12px; border-radius:50%; background:#fff; position:absolute; top:2px; left:2px; transition:transform .15s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+.tog.on::after { transform:translateX(14px); }
+
+/* ══════════════════════════════════════════════════════════════
+   CANVAS + PAGE SIMULATION
+   ══════════════════════════════════════════════════════════════ */
+.canvas {
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  padding:36px 40px 60px 180px;
+}
+
+/* Outer page chrome */
+.psim-outer {
+  max-width:860px; position:relative;
+  border-radius:10px; overflow:visible;
+  box-shadow:0 2px 6px rgba(0,0,0,.07),0 20px 56px rgba(0,0,0,.12);
+}
+
+/* Badge column — sits to the LEFT of the simulation card */
+.ann-badges {
+  position:absolute; top:0; bottom:0;
+  right:calc(100% + 14px);
+  pointer-events:none; overflow:visible;
+  transition:opacity .15s;
+}
+.ann-badges.hidden { opacity:0; }
+.ann-badges .s-ann { right:0; left:auto; flex-direction:row-reverse; }
+
+/* Page body — all sim variables live here */
+.psim-body {
+  background:var(--sim-page-bg, var(--komma-surface-page));
+  border-radius:10px;
+  padding:var(--sim-page-padding, var(--komma-page-padding));
+  position:relative;
+
+  /* Simulation CSS variables (updated by controls via JS) */
+  --sim-title-size:     var(--komma-text-h1);
+  --sim-title-weight:   var(--komma-weight-semibold);
+  --sim-title-font:     var(--komma-font-sans);
+  --sim-sub-size:       var(--komma-text-small);
+  --sim-sub-color:      var(--komma-text-tertiary);
+  --sim-title-sub-gap:  var(--komma-space-2);
+  --sim-sub-tabs-gap:   var(--komma-space-5);
+  --sim-page-bg:        var(--komma-surface-page);
+  --sim-page-padding:   var(--komma-page-padding);
+  --sim-card-padding:   var(--komma-card-padding);
+  --sim-card-gap:       var(--komma-card-gap);
+  --sim-card-radius:    var(--komma-radius-md);
+  --sim-card-bg:        var(--komma-surface-card);
+  --sim-metric-size:    var(--komma-metric-lg);
+  --sim-kpi1-dot:       var(--komma-status-success);
+  --sim-kpi2-dot:       var(--komma-status-success);
+  --sim-kpi3-dot:       var(--komma-status-warning);
+}
+
+/* Section wrappers — real margins drive the actual spacing */
+.sw { }
+#sw1 { margin-bottom:var(--sim-title-sub-gap, var(--komma-space-2)); }
+#sw2 { margin-bottom:var(--sim-sub-tabs-gap, var(--komma-space-5)); }
+#sw3 { margin-bottom:var(--sim-card-gap,      var(--komma-card-gap)); }
+
+/* Annotation overlay — absolute on top of psim-body, toggle-able */
+.ann-overlay {
+  position:absolute; inset:0;
+  pointer-events:none; overflow:visible;
+  transition:opacity .15s;
+}
+.ann-overlay.hidden { opacity:0; }
+
+/* Section badges (positioned by JS) */
+.s-ann { position:absolute; display:inline-flex; align-items:center; gap:4px; }
+.ann-n {
+  width:20px; height:20px; border-radius:50%;
+  background:#E5291A; color:#fff;
+  font-size:10px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; line-height:1;
+}
+.ann-t {
+  font-size:10px; font-family:ui-monospace,monospace; color:#E5291A;
+  background:rgba(229,41,26,.07); border:1px solid rgba(229,41,26,.2);
+  border-radius:3px; padding:2px 5px; white-space:nowrap;
+}
+
+/* Section 1: page title */
+.page-title {
+  font-size:var(--sim-title-size);
+  font-weight:var(--sim-title-weight);
+  font-family:var(--sim-title-font);
+  color:var(--komma-text-primary);
+  line-height:var(--komma-line-height); letter-spacing:-0.015em;
+}
+
+/* Section 2: subtitle */
+.page-sub {
+  font-size:var(--sim-sub-size);
+  color:var(--sim-sub-color); line-height:var(--komma-line-height);
+}
+
+/* Section 3: tab bar */
+.page-tabs {
+  display:flex; border-bottom:1px solid var(--komma-border); gap:var(--komma-space-5);
+}
+.tab {
+  padding:var(--komma-space-3) 0; font-size:var(--komma-text-small); font-weight:var(--komma-weight-medium);
+  color:var(--komma-text-secondary);
+  border-bottom:2px solid transparent; margin-bottom:-1px;
+  cursor:pointer; transition:color .12s; white-space:nowrap;
+}
+.tab.active { color:var(--komma-text-primary); font-weight:var(--komma-weight-semibold); border-bottom-color:var(--komma-text-primary); }
+
+/* Section 4: content */
+.sim-content { }
+
+/* Gap annotation arrows (positioned by JS — real gap measured from rendered sections) */
+.gap-ann { position:absolute; overflow:visible; }
+.ga-line {
+  position:absolute; top:0; bottom:0; left:10px; width:1.5px;
+  background:rgba(229,41,26,.3);
+}
+.ga-line::before {
+  content:''; position:absolute; top:-1px; left:50%; transform:translateX(-50%);
+  border-left:3px solid transparent; border-right:3px solid transparent;
+  border-bottom:4px solid rgba(229,41,26,.65);
+}
+.ga-line::after {
+  content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%);
+  border-left:3px solid transparent; border-right:3px solid transparent;
+  border-top:4px solid rgba(229,41,26,.65);
+}
+.ga-badge {
+  position:absolute; left:20px; top:50%; transform:translateY(-50%);
+  font-size:9px; font-family:ui-monospace,monospace; color:#E5291A;
+  background:rgba(229,41,26,.08); border:1px solid rgba(229,41,26,.2);
+  border-radius:3px; padding:1px 4px; white-space:nowrap; line-height:1.6;
+}
+
+.scenario-bar {
+  display:flex; align-items:center; gap:5px; margin-bottom:14px;
+  font-size:10px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--komma-text-tertiary); font-weight:600;
+}
+.scenario-bar strong { color:var(--komma-text-secondary); font-weight:600; }
+
+.kpi-row {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:var(--sim-card-gap); margin-bottom:var(--sim-card-gap);
+}
+.kpi-card {
+  background:var(--sim-card-bg);
+  border:1px solid var(--komma-border);
+  border-radius:var(--sim-card-radius);
+  padding:var(--sim-card-padding);
+  box-shadow:var(--komma-shadow-card);
+}
+.kpi-lbl {
+  display:flex; align-items:center; gap:5px; margin-bottom:10px;
+  font-size:var(--komma-text-caps); text-transform:uppercase; letter-spacing:.07em;
+  color:var(--komma-text-tertiary); font-weight:600;
+}
+.kpi-val {
+  font-size:var(--sim-metric-size); font-family:var(--komma-font-display);
+  font-weight:var(--komma-weight-semibold); color:var(--komma-text-primary);
+  line-height:var(--komma-line-height); letter-spacing:-0.02em; font-variant-numeric:tabular-nums;
+}
+.kpi-note { margin-top:4px; font-size:var(--komma-text-small); color:var(--komma-text-tertiary); }
+
+.chart-card {
+  background:var(--sim-card-bg);
+  border:1px solid var(--komma-border);
+  border-radius:var(--sim-card-radius);
+  padding:var(--sim-card-padding);
+  box-shadow:var(--komma-shadow-card);
+}
+.chart-head {
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:var(--komma-text-caps); text-transform:uppercase; letter-spacing:.07em;
+  color:var(--komma-text-tertiary); font-weight:600; margin-bottom:14px;
+}
+.chart-area { position:relative; height:96px; }
+
+/* Flash highlight on change */
+@keyframes kf-flash {
+  0%  { outline:2px solid rgba(229,41,26,.3); background:rgba(229,41,26,.04); border-radius:4px; }
+  100%{ outline:2px solid transparent;       background:transparent;         border-radius:4px; }
+}
+.sw.flash { animation:kf-flash .55s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- ─── CONTROL PANEL ──────────────────────────────────────── -->
+<aside class="panel">
+
+  <div class="panel-head">
+    <div class="p-logo">komma<em>,</em></div>
+    <div class="p-sub">Page Structure · Token Guide</div>
+  </div>
+
+  <div class="panel-scroll">
+
+    <!-- TYPOGRAPHY ① -->
+    <div class="group" id="g-type">
+      <div class="group-head" onclick="toggleGroup('g-type')">
+        <em class="g-badge">Aa</em>
+        <span class="g-title">Typography</span>
+        <svg class="g-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="group-items">
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Page title size</span><span class="ctrl-tok" id="ck-title-size">--komma-text-h1</span></div>
+          <select id="s-title-size" onchange="setV('--sim-title-size',this.value,'ck-title-size','cr-title-size','sw1','ann1-t','--komma-text-h1')">
+            <option value="var(--komma-text-caps)">text-caps · 10px</option>
+            <option value="var(--komma-text-small)">text-small · 12px</option>
+            <option value="var(--komma-text-body)">text-body · 14px</option>
+            <option value="var(--komma-text-h3)">text-h3 · 16px</option>
+            <option value="var(--komma-text-h2)">text-h2 · 20px</option>
+            <option value="var(--komma-text-h1)" selected>text-h1 · 24px</option>
+            <option value="var(--komma-metric-md)">metric-md · 20px</option>
+            <option value="var(--komma-metric-lg)">metric-lg · 24px</option>
+            <option value="var(--komma-metric-xl)">metric-xl · 28px</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Title weight</span><span class="ctrl-tok" id="ck-title-wt">--komma-weight-semibold</span></div>
+          <select id="s-title-wt" onchange="setV('--sim-title-weight',this.value,'ck-title-wt','cr-title-wt','sw1',null,null)">
+            <option value="var(--komma-weight-regular)">weight-regular · 400</option>
+            <option value="var(--komma-weight-medium)">weight-medium · 500</option>
+            <option value="var(--komma-weight-semibold)" selected>weight-semibold · 600</option>
+            <option value="var(--komma-weight-bold)">weight-bold · 700</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Title font family</span><span class="ctrl-tok" id="ck-title-ff">--komma-font-sans</span></div>
+          <select id="s-title-ff" onchange="setV('--sim-title-font',this.value,'ck-title-ff','cr-title-ff','sw1',null,null)">
+            <option value="var(--komma-font-sans)" selected>font-sans · Inter</option>
+            <option value="var(--komma-font-display)">font-display · Inter Tight</option>
+            <option value="var(--komma-font-serif)">font-serif · Source Serif 4</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Subtitle size</span><span class="ctrl-tok" id="ck-sub-size">--komma-text-small</span></div>
+          <select id="s-sub-size" onchange="setV('--sim-sub-size',this.value,'ck-sub-size','cr-sub-size','sw2','ann2-t','--komma-text-small')">
+            <option value="var(--komma-text-small)" selected>text-small · 12px</option>
+            <option value="var(--komma-text-body)">text-body · 14px</option>
+            <option value="var(--komma-text-h3)">text-h3 · 16px</option>
+            <option value="var(--komma-text-h2)">text-h2 · 20px</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Subtitle color</span><span class="ctrl-tok" id="ck-sub-color">--komma-text-tertiary</span></div>
+          <select id="s-sub-color" onchange="setV('--sim-sub-color',this.value,'ck-sub-color','cr-sub-color','sw2',null,null)">
+            <option value="var(--komma-text-primary)">text-primary · #1E1E1D</option>
+            <option value="var(--komma-text-secondary)">text-secondary · #6E6E6A</option>
+            <option value="var(--komma-text-tertiary)" selected>text-tertiary · #9A9A96</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">KPI metric size</span><span class="ctrl-tok" id="ck-metric">--komma-metric-lg</span></div>
+          <select id="s-metric" onchange="setV('--sim-metric-size',this.value,'ck-metric','cr-metric','sw4','ann4-t','--komma-metric-lg')">
+            <option value="var(--komma-metric-md)">metric-md · 20px</option>
+            <option value="var(--komma-metric-lg)" selected>metric-lg · 24px</option>
+            <option value="var(--komma-metric-xl)">metric-xl · 28px</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SPACING ② -->
+    <div class="group" id="g-space">
+      <div class="group-head" onclick="toggleGroup('g-space')">
+        <em class="g-badge">↕</em>
+        <span class="g-title">Spacing</span>
+        <svg class="g-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="group-items">
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Title → Subtitle</span><span class="ctrl-tok" id="ck-tsub">--komma-space-2</span></div>
+          <select id="s-tsub" onchange="setV('--sim-title-sub-gap',this.value,'ck-tsub','cr-tsub',null,null,null,'gv-ts')">
+            <option value="var(--komma-space-1)">space-1 · 4px</option>
+            <option value="var(--komma-space-2)" selected>space-2 · 8px</option>
+            <option value="var(--komma-space-3)">space-3 · 10px</option>
+            <option value="var(--komma-space-4)">space-4 · 12px</option>
+            <option value="var(--komma-space-5)">space-5 · 16px</option>
+            <option value="var(--komma-space-6)">space-6 · 24px</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Subtitle → Tabs</span><span class="ctrl-tok" id="ck-stabs">--komma-space-5</span></div>
+          <select id="s-stabs" onchange="setV('--sim-sub-tabs-gap',this.value,'ck-stabs','cr-stabs',null,null,null,'gv-st')">
+            <option value="var(--komma-space-1)">space-1 · 4px</option>
+            <option value="var(--komma-space-2)">space-2 · 8px</option>
+            <option value="var(--komma-space-3)">space-3 · 10px</option>
+            <option value="var(--komma-space-4)">space-4 · 12px</option>
+            <option value="var(--komma-space-5)" selected>space-5 · 16px</option>
+            <option value="var(--komma-space-6)">space-6 · 24px</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Page padding</span><span class="ctrl-tok" id="ck-pp">--komma-page-padding</span></div>
+          <select id="s-pp" onchange="setV('--sim-page-padding',this.value,'ck-pp','cr-pp',null,null,null)">
+            <option value="var(--komma-space-3)">space-3 · 10px</option>
+            <option value="var(--komma-space-4)">space-4 · 12px</option>
+            <option value="var(--komma-space-5)">space-5 · 16px</option>
+            <option value="var(--komma-space-6)" selected>space-6 · 24px (default)</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Card gap</span><span class="ctrl-tok" id="ck-cgap">--komma-card-gap</span></div>
+          <select id="s-cgap" onchange="setV('--sim-card-gap',this.value,'ck-cgap','cr-cgap',null,null,null,'gv-tc')">
+            <option value="var(--komma-space-2)">space-2 · 8px</option>
+            <option value="var(--komma-space-3)">space-3 · 10px</option>
+            <option value="var(--komma-space-4)">space-4 · 12px</option>
+            <option value="var(--komma-space-5)" selected>space-5 · 16px (default)</option>
+            <option value="var(--komma-space-6)">space-6 · 24px</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Card padding</span><span class="ctrl-tok" id="ck-cpad">--komma-card-padding</span></div>
+          <select id="s-cpad" onchange="setV('--sim-card-padding',this.value,'ck-cpad','cr-cpad','sw4',null,null)">
+            <option value="var(--komma-space-3)">space-3 · 10px</option>
+            <option value="var(--komma-space-4)">space-4 · 12px</option>
+            <option value="var(--komma-space-5)" selected>space-5 · 16px (default)</option>
+            <option value="var(--komma-space-6)">space-6 · 24px</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SHAPE ③ -->
+    <div class="group" id="g-shape">
+      <div class="group-head" onclick="toggleGroup('g-shape')">
+        <em class="g-badge">◻</em>
+        <span class="g-title">Shape</span>
+        <svg class="g-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="group-items">
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Card radius</span><span class="ctrl-tok" id="ck-crad">--komma-radius-md</span></div>
+          <select id="s-crad" onchange="setV('--sim-card-radius',this.value,'ck-crad','cr-crad','sw4',null,null)">
+            <option value="0">none · 0px</option>
+            <option value="var(--komma-radius-sm)">radius-sm · 4px</option>
+            <option value="var(--komma-radius-md)" selected>radius-md · 8px</option>
+            <option value="var(--komma-radius-lg)">radius-lg · 12px</option>
+            <option value="var(--komma-radius-xl)">radius-xl · 16px</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SURFACE ④ -->
+    <div class="group" id="g-surf">
+      <div class="group-head" onclick="toggleGroup('g-surf')">
+        <em class="g-badge">◈</em>
+        <span class="g-title">Surface</span>
+        <svg class="g-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="group-items">
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Page background</span><span class="ctrl-tok" id="ck-pbg">--komma-surface-page</span></div>
+          <select id="s-pbg" onchange="setV('--sim-page-bg',this.value,'ck-pbg','cr-pbg',null,null,null)">
+            <option value="var(--komma-surface-page)" selected>surface-page · #F6F6F6</option>
+            <option value="var(--komma-surface-card)">surface-card · #FAFAFA</option>
+            <option value="var(--komma-surface-sunken)">surface-sunken · #F1F1EF</option>
+            <option value="#fff">white · #FFFFFF</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Card background</span><span class="ctrl-tok" id="ck-cbg">--komma-surface-card</span></div>
+          <select id="s-cbg" onchange="setV('--sim-card-bg',this.value,'ck-cbg','cr-cbg','sw4',null,null)">
+            <option value="var(--komma-surface-card)" selected>surface-card · #FAFAFA</option>
+            <option value="var(--komma-surface-sunken)">surface-sunken · #F1F1EF</option>
+            <option value="var(--komma-surface-muted)">surface-muted · #F1F1EF</option>
+            <option value="#fff">white · #FFFFFF</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STATUS ⑤ -->
+    <div class="group" id="g-status">
+      <div class="group-head" onclick="toggleGroup('g-status')">
+        <em class="g-badge">●</em>
+        <span class="g-title">Status · KPI</span>
+        <svg class="g-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="group-items">
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Disponibel nu</span><span class="ctrl-tok" id="ck-s1">--komma-status-success</span></div>
+          <select id="s-kpi1" onchange="setStatus(1,this.value)">
+            <option value="success" selected>success · #057F34</option>
+            <option value="warning">warning · #A06000</option>
+            <option value="critical">critical · #C11806</option>
+            <option value="info">info · #455FE4</option>
+            <option value="none">none · tertiary</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Laveste punkt</span><span class="ctrl-tok" id="ck-s2">--komma-status-success</span></div>
+          <select id="s-kpi2" onchange="setStatus(2,this.value)">
+            <option value="success" selected>success · #057F34</option>
+            <option value="warning">warning · #A06000</option>
+            <option value="critical">critical · #C11806</option>
+            <option value="info">info · #455FE4</option>
+            <option value="none">none · tertiary</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head"><span class="ctrl-name">Uger til cash gap</span><span class="ctrl-tok" id="ck-s3">--komma-status-warning</span></div>
+          <select id="s-kpi3" onchange="setStatus(3,this.value)">
+            <option value="success">success · #057F34</option>
+            <option value="warning" selected>warning · #A06000</option>
+            <option value="critical">critical · #C11806</option>
+            <option value="info">info · #455FE4</option>
+            <option value="none">none · tertiary</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /panel-scroll -->
+
+  <div class="panel-foot">
+    <div class="tog-wrap" onclick="toggleAnns()">
+      <div class="tog on" id="ann-tog"></div>
+      <span>Show annotations</span>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ─── PAGE SIMULATION ────────────────────────────────────── -->
+<div class="canvas">
+  <div class="psim-outer" id="psimOuter">
+
+    <!-- Section number badges — outside the card, to the left -->
+    <div id="ann-badges" class="ann-badges">
+      <div class="s-ann" id="ann1"><span class="ann-n">1</span><span class="ann-t" id="ann1-t">--komma-text-h1</span></div>
+      <div class="s-ann" id="ann2"><span class="ann-n">2</span><span class="ann-t" id="ann2-t">--komma-text-small</span></div>
+      <div class="s-ann" id="ann3"><span class="ann-n">3</span><span class="ann-t" id="ann3-t">--komma-space-5</span></div>
+      <div class="s-ann" id="ann4"><span class="ann-n">4</span><span class="ann-t" id="ann4-t">--komma-card-gap</span></div>
+    </div>
+
+    <!-- Page body -->
+    <div class="psim-body" id="psimBody">
+
+      <!-- ① Page title -->
+      <div class="sw" id="sw1">
+        <h1 class="page-title">Likviditet</h1>
+      </div>
+
+      <!-- ② Subtitle -->
+      <div class="sw" id="sw2">
+        <p class="page-sub">Udgangspunkt. Tilføj scenarier i højre kolonne.</p>
+      </div>
+
+      <!-- ③ Tab bar -->
+      <div class="sw" id="sw3">
+        <div class="page-tabs">
+          <div class="tab active">Likviditetsprognose</div>
+          <div class="tab">Pengestrømsopgørelse</div>
+        </div>
+      </div>
+
+      <!-- ④ Content area -->
+      <div class="sw sim-content" id="sw4">
+        <div class="scenario-bar">Scenarie: <strong>Basis</strong></div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-lbl">Disponibel nu</div>
+            <div class="kpi-val">251k</div>
+            <div class="kpi-note">4 bankkonti</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-lbl">Laveste punkt</div>
+            <div class="kpi-val">106k</div>
+            <div class="kpi-note">Uge 36</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-lbl">Uger til cash gap</div>
+            <div class="kpi-val" id="kv3" style="color:var(--komma-status-warning)">Ingen</div>
+            <div class="kpi-note">Positiv hele perioden</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-head">
+            <span>Disponibel likviditet · 13 uger</span>
+            <span style="opacity:.5;font-size:10px">DKK</span>
+          </div>
+          <div class="chart-area">
+            <canvas id="chart" width="820" height="96" style="width:100%;height:96px;display:block"></canvas>
+          </div>
+        </div>
+
+      </div><!-- /sw4 -->
+
+      <!-- Gap arrow overlay — inside the card, positioned by JS -->
+      <div id="ann-overlay" class="ann-overlay">
+        <div class="gap-ann" id="ga-ts"><div class="ga-line"></div><div class="ga-badge"><span id="gv-ts">8px</span></div></div>
+        <div class="gap-ann" id="ga-st"><div class="ga-line"></div><div class="ga-badge"><span id="gv-st">16px</span></div></div>
+        <div class="gap-ann" id="ga-tc"><div class="ga-line"></div><div class="ga-badge"><span id="gv-tc">16px</span></div></div>
+      </div>
+
+    </div><!-- /psim-body -->
+  </div><!-- /psim-outer -->
+</div><!-- /canvas -->
+
+<script>
+// ── Token resolved-value map ─────────────────────────────────
+const RES = {
+  'var(--komma-text-caps)':       ['--komma-text-caps',        '10px'],
+  'var(--komma-text-small)':      ['--komma-text-small',       '12px'],
+  'var(--komma-text-body)':       ['--komma-text-body',        '14px'],
+  'var(--komma-text-h3)':         ['--komma-text-h3',          '16px'],
+  'var(--komma-text-h2)':         ['--komma-text-h2',          '20px'],
+  'var(--komma-text-h1)':         ['--komma-text-h1',          '24px'],
+  'var(--komma-metric-md)':       ['--komma-metric-md',        '20px'],
+  'var(--komma-metric-lg)':       ['--komma-metric-lg',        '24px'],
+  'var(--komma-metric-xl)':       ['--komma-metric-xl',        '28px'],
+  'var(--komma-weight-regular)':  ['--komma-weight-regular',   '400'],
+  'var(--komma-weight-medium)':   ['--komma-weight-medium',    '500'],
+  'var(--komma-weight-semibold)': ['--komma-weight-semibold',  '600'],
+  'var(--komma-weight-bold)':     ['--komma-weight-bold',      '700'],
+  'var(--komma-font-sans)':       ['--komma-font-sans',        'Inter'],
+  'var(--komma-font-display)':    ['--komma-font-display',     'Inter Tight'],
+  'var(--komma-font-serif)':      ['--komma-font-serif',       'Source Serif 4'],
+  'var(--komma-space-1)':         ['--komma-space-1',          '4px'],
+  'var(--komma-space-2)':         ['--komma-space-2',          '8px'],
+  'var(--komma-space-3)':         ['--komma-space-3',          '10px'],
+  'var(--komma-space-4)':         ['--komma-space-4',          '12px'],
+  'var(--komma-space-5)':         ['--komma-space-5',          '16px'],
+  'var(--komma-space-6)':         ['--komma-space-6',          '24px'],
+  'var(--komma-radius-sm)':       ['--komma-radius-sm',        '4px'],
+  'var(--komma-radius-md)':       ['--komma-radius-md',        '8px'],
+  'var(--komma-radius-lg)':       ['--komma-radius-lg',        '12px'],
+  'var(--komma-radius-xl)':       ['--komma-radius-xl',        '16px'],
+  '0':                            ['none',                     '0px'],
+  'var(--komma-surface-page)':    ['--komma-surface-page',     '#F6F6F6'],
+  'var(--komma-surface-card)':    ['--komma-surface-card',     '#FAFAFA'],
+  'var(--komma-surface-sunken)':  ['--komma-surface-sunken',   '#F1F1EF'],
+  'var(--komma-surface-muted)':   ['--komma-surface-muted',    '#F1F1EF'],
+  '#fff':                         ['white',                    '#FFFFFF'],
+  'var(--komma-text-primary)':    ['--komma-text-primary',     '#1E1E1D'],
+  'var(--komma-text-secondary)':  ['--komma-text-secondary',   '#6E6E6A'],
+  'var(--komma-text-tertiary)':   ['--komma-text-tertiary',    '#9A9A96'],
+};
+
+const SIM = document.getElementById('psimBody');
+
+// Set a CSS variable on the simulation body
+function setV(prop, value, chipId, resId, flashId, annTokId, annFallback, gapValId) {
+  SIM.style.setProperty(prop, value);
+  const info = RES[value];
+  if (chipId)   document.getElementById(chipId).textContent   = info ? info[0] : value;
+  if (resId)    document.getElementById(resId).textContent    = 'resolved → ' + (info ? info[1] : value);
+  if (annTokId) document.getElementById(annTokId).textContent = info ? info[0] : (annFallback || value);
+  if (gapValId) { const el = document.getElementById(gapValId); if (el) el.textContent = info ? info[1] : value; }
+  if (flashId)  flash(flashId);
+  requestAnimationFrame(redrawAnnotations);
+}
+
+// Measure rendered section positions and place annotation overlay elements
+function redrawAnnotations() {
+  const body  = document.getElementById('psimBody');
+  const outer = document.getElementById('psimOuter');
+  const br = body.getBoundingClientRect();
+  const or = outer.getBoundingClientRect();
+
+  // Section badges — outside the card, right-aligned in ann-badges column
+  ['sw1','sw2','sw3','sw4'].forEach(function(sid, i) {
+    const sr  = document.getElementById(sid).getBoundingClientRect();
+    const ann = document.getElementById('ann' + (i + 1));
+    ann.style.top   = (sr.top - or.top) + 'px';
+    ann.style.right = '0';
+    ann.style.left  = 'auto';
+  });
+
+  // Gap arrows — inside the card, span actual rendered gap between sections
+  [['sw1','sw2','ga-ts'], ['sw2','sw3','ga-st'], ['sw3','sw4','ga-tc']].forEach(function(t) {
+    const r1 = document.getElementById(t[0]).getBoundingClientRect();
+    const r2 = document.getElementById(t[1]).getBoundingClientRect();
+    const ga = document.getElementById(t[2]);
+    const top    = r1.bottom - br.top;
+    const height = Math.max(r2.top - r1.bottom, 0);
+    ga.style.top    = top + 'px';
+    ga.style.left   = '4px';
+    ga.style.height = height + 'px';
+    ga.style.display = height < 1 ? 'none' : '';
+  });
+}
+
+// Flash a section with the red outline
+function flash(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+}
+
+// Status tokens
+const STAT = {
+  success:  ['var(--komma-status-success)',  '--komma-status-success'],
+  warning:  ['var(--komma-status-warning)',  '--komma-status-warning'],
+  critical: ['var(--komma-status-critical)', '--komma-status-critical'],
+  info:     ['var(--komma-status-info)',      '--komma-status-info'],
+  none:     ['var(--komma-text-tertiary)',    '--komma-text-tertiary'],
+};
+
+function setStatus(n, key) {
+  const [dotVal, tokenName] = STAT[key];
+  document.getElementById('dot'+n).style.background = dotVal;
+  document.getElementById('ck-s'+n).textContent = tokenName;
+  if (n === 3) {
+    const kv3 = document.getElementById('kv3');
+    kv3.style.color = key === 'none' ? 'var(--komma-text-primary)' : dotVal;
+  }
+  flash('sw4');
+}
+
+// Group collapse toggle
+function toggleGroup(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+// Annotations toggle — hides/shows both the badge column and gap arrows
+let annsVisible = true;
+function toggleAnns() {
+  annsVisible = !annsVisible;
+  document.getElementById('ann-tog').classList.toggle('on', annsVisible);
+  document.getElementById('ann-overlay').classList.toggle('hidden', !annsVisible);
+  document.getElementById('ann-badges').classList.toggle('hidden', !annsVisible);
+}
+
+// Initial annotation draw + reposition on resize
+window.addEventListener('resize', redrawAnnotations);
+requestAnimationFrame(redrawAnnotations);
+
+// ── Sparkline chart ──────────────────────────────────────────
+(function drawChart() {
+  const cvs = document.getElementById('chart');
+  const ctx = cvs.getContext('2d');
+  const W = cvs.width, H = cvs.height;
+  const data = [813, 813, 780, 740, 680, 580, 480, 380, 280, 200, 155, 115, 106];
+  const lo = 0, hi = 940;
+
+  function py(v) { return H - 8 - ((v - lo) / (hi - lo)) * (H - 20); }
+  const pts = data.map((v, i) => ({ x: (i / (data.length - 1)) * W, y: py(v) }));
+
+  // Faint grid
+  ctx.strokeStyle = 'rgba(28,28,30,.055)';
+  ctx.lineWidth = 1;
+  [200, 400, 600, 800].forEach(v => {
+    const y = py(v);
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  });
+
+  // Area fill
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, 'rgba(41,40,62,.15)');
+  g.addColorStop(1, 'rgba(41,40,62,.01)');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, H);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, H);
+  ctx.closePath();
+  ctx.fillStyle = g; ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.strokeStyle = '#29283E'; ctx.lineWidth = 1.5; ctx.lineJoin = 'round'; ctx.stroke();
+
+  // Zero-line dashed reference
+  const zy = py(0);
+  ctx.beginPath(); ctx.setLineDash([4,3]);
+  ctx.moveTo(0, zy + 16); ctx.lineTo(W, zy + 16);
+  ctx.strokeStyle = 'rgba(193,24,6,.28)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.setLineDash([]);
+
+  // End-point dot
+  const lp = pts[pts.length-1];
+  ctx.beginPath(); ctx.arc(lp.x, lp.y, 3.5, 0, Math.PI*2);
+  ctx.fillStyle = '#29283E'; ctx.fill();
+
+  // Value labels on grid lines
+  ctx.fillStyle = 'rgba(28,28,30,.3)'; ctx.font = '9px system-ui,sans-serif';
+  ctx.textAlign = 'left';
+  [[800,'800k'],[400,'400k'],[0,'0']].forEach(([v,label]) => {
+    ctx.fillText(label, 3, py(v) - 3);
+  });
+})();
+</script>
+
+</body>
+</html>
