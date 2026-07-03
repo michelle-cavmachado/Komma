@@ -168,7 +168,7 @@ select:focus { border-color:var(--p-brand); box-shadow:0 0 0 2px var(--p-brand-b
   /* Simulation CSS variables (updated by controls via JS) */
   --sim-title-size:     var(--komma-text-h1);
   --sim-title-weight:   var(--komma-weight-semibold);
-  --sim-title-font:     var(--komma-font-sans);
+  --sim-title-font:     var(--komma-font-display);
   --sim-sub-size:       var(--komma-text-small);
   --sim-sub-color:      var(--komma-text-tertiary);
   --sim-title-sub-gap:  var(--komma-space-2);
@@ -366,10 +366,10 @@ select:focus { border-color:var(--p-brand); box-shadow:0 0 0 2px var(--p-brand-b
         </div>
 
         <div class="ctrl">
-          <div class="ctrl-head"><span class="ctrl-name">Title font family</span><span class="ctrl-tok" id="ck-title-ff">--komma-font-sans</span></div>
+          <div class="ctrl-head"><span class="ctrl-name">Title font family</span><span class="ctrl-tok" id="ck-title-ff">--komma-font-display</span></div>
           <select id="s-title-ff" onchange="setV('--sim-title-font',this.value,'ck-title-ff','cr-title-ff','sw1',null,null)">
-            <option value="var(--komma-font-sans)" selected>font-sans · Inter</option>
-            <option value="var(--komma-font-display)">font-display · Inter Tight</option>
+            <option value="var(--komma-font-sans)">font-sans · Inter</option>
+            <option value="var(--komma-font-display)" selected>font-display · Inter Tight</option>
             <option value="var(--komma-font-serif)">font-serif · Source Serif 4</option>
           </select>
         </div>
