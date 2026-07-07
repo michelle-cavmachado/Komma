@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Komma — Controlling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─── Design system tokens (Komma v3) ─── */
+:root {
+  --page-bg:    #F6F6F6;
+  --s0:         #FAFAFA;
+  --s1:         #F1F1EF;
+  --b1:         rgba(28,28,30,0.09);
+  --b2:         rgba(28,28,30,0.14);
+  --t1:         #1E1E1D;
+  --t2:         #6E6E6A;
+  --t3:         #9A9A96;
+  --light:      #C6C6C2;
+  --brand:      #29283E;
+  --brand-h:    #1F1E30;
+  --brand-bg:   #ECECF1;
+  --brand-b:    #D6D6E0;
+  --accent:     #9B99C4;
+  --ok:         #1A7A45;
+  --ok-bg:      #E8F5EE;
+  --ok-b:       #B6DECA;
+  --warn:       #A06000;
+  --warn-bg:    #FDF3E0;
+  --warn-b:     #E8CFA0;
+  --crit:       #B52018;
+  --crit-bg:    #FDEBE9;
+  --crit-b:     #EDBBBA;
+  --info:       #1555A8;
+  --info-bg:    #E8EFFE;
+  --info-b:     #BACBF2;
+  --sh:         0 1px 2px rgba(30,30,30,.025), 0 4px 16px rgba(30,30,30,.05);
+  --display:    'Inter Tight', system-ui, sans-serif;
+  --sans:       'Inter', system-ui, sans-serif;
+  --mono:       'JetBrains Mono', ui-monospace, monospace;
+  --r8:         8px;
+  --r12:        12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--t1);
+  background: var(--page-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Shell ─── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: 248px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid var(--b1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar { display: none; }
+
+.sidebar-logo {
+  padding: 22px 20px 14px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.03em;
+  color: var(--t1);
+  flex-shrink: 0;
+}
+.sidebar-logo .comma { color: var(--brand); }
+
+.sidebar-tabs {
+  display: flex;
+  margin: 0 12px 12px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: 8px;
+  padding: 3px;
+  flex-shrink: 0;
+}
+.sidebar-tab {
+  flex: 1;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--t3);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.sidebar-tab.active {
+  background: #fff;
+  color: var(--t1);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(28,28,30,0.1);
+}
+
+.sidebar-client {
+  margin: 0 10px 8px;
+  padding: 9px 10px;
+  background: var(--s1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  border: 1px solid var(--b1);
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+.sidebar-client:hover { background: #ebebeb; }
+.sidebar-client-avatar {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand);
+  flex-shrink: 0;
+}
+.sidebar-client-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-client-cvr { font-size: 10px; color: var(--t3); }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  margin: 1px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--t2);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.1s, color 0.1s;
+}
+.nav-item:hover:not(.active) {
+  background: var(--s1);
+  color: var(--t1);
+}
+.nav-item.active {
+  background: var(--brand-bg);
+  color: var(--brand);
+  font-weight: 600;
+}
+.nav-item svg {
+  width: 15px; height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: var(--s1);
+  color: var(--t3);
+  border: 1px solid var(--b1);
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 10px 10px 12px;
+  border-top: 1px solid var(--b1);
+  flex-shrink: 0;
+}
+.sidebar-firm-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--t3);
+  padding: 4px 6px 8px;
+}
+.sidebar-kunde-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--t2);
+  background: #fff;
+  border: 1px solid var(--b2);
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-family: var(--sans);
+  transition: background 0.1s;
+}
+.sidebar-kunde-btn:hover { background: var(--s1); }
+.sidebar-kunde-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.sidebar-email {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: var(--t3);
+}
+.sidebar-email svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; cursor: pointer; }
+.sidebar-email svg:hover { color: var(--t2); }
+
+/* ─── Main area ─── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Client tab bar — dark full-width strip with a white pill tab */
+.tab-bar {
+  height: 48px;
+  background: var(--brand);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.client-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 8px 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+  background: #fff;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s;
+}
+.client-tab:hover { background: #f2f2f2; }
+.client-tab .t-avatar {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.client-tab .t-status {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #3DBE6B;
+  flex-shrink: 0;
+}
+.client-tab .t-x {
+  color: var(--t3);
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 4px;
+  border-radius: 4px;
+  margin-left: 2px;
+}
+.client-tab .t-x:hover { background: var(--s1); color: var(--t1); }
+.tab-bar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.tab-add {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--t1);
+  cursor: pointer;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.tab-add:hover { background: #f2f2f2; }
+
+.lang-toggle {
+  display: flex;
+  background: var(--s1);
+  border: 1px solid var(--b2);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 1px;
+}
+.lang-btn {
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+  color: var(--t3);
+  cursor: pointer;
+}
+.lang-btn.active { background: #fff; color: var(--t1); box-shadow: 0 1px 3px rgba(28,28,30,0.1); }
+
+/* Page body */
+.page-body { flex: 1; overflow-y: auto; }
+
+/* Page header */
+.page-header {
+  background: var(--page-bg);
+  border-bottom: 1px solid var(--b1);
+  padding: 0 28px;
+}
+.page-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 0 4px;
+}
+.page-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--t3);
+  margin-bottom: 3px;
+}
+.page-title {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--t1);
+  line-height: 1.15;
+}
+.page-sub {
+  font-size: 12px;
+  color: var(--t3);
+  margin-top: 3px;
+}
+.abtn.update-btn { gap: 7px; }
+
+/* Period navigator */
+.period-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 0 14px;
+}
+.period-btn {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px;
+  color: var(--t3);
+  cursor: pointer;
+}
+.period-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.period-btn:hover { background: var(--s1); color: var(--t1); }
+.period-label {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--t1);
+  min-width: 120px;
+  text-align: center;
+}
+
+/* Content */
+.content { padding: 18px 28px 60px; }
+
+/* ─── Scan summary header ─── */
+.scan-header {
+  background: #fff;
+  border: 1px solid var(--b1);
+  border-radius: var(--r12);
+  padding: 16px 18px 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--sh);
+}
+.scan-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+.scan-summary {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.5;
+}
+.scan-summary b { color: var(--t1); font-weight: 600; }
+.scan-meta { font-size: 11px; color: var(--t3); margin-top: 3px; }
+.scan-chips { display: flex; gap: 20px; flex-wrap: wrap; }
+.schip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t2);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 2px 0;
+}
+.schip .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.schip.danger { color: var(--crit); }
+.schip.danger .dot { background: var(--crit); }
+.schip.warn   { color: var(--t1); }
+.schip.warn .dot { background: var(--t1); }
+.schip.ok     { color: var(--ok); }
+.schip.ok .dot { background: var(--ok); }
+.schip.muted  { color: var(--t3); }
+.schip.muted .dot { background: var(--t3); }
+.schip .n { font-family: var(--display); font-weight: 700; }
+.schip.picked { text-decoration: underline; text-underline-offset: 2px; }
+
+/* ─── Filter bar ─── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.fselect {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: var(--r8);
+  border: 1px solid var(--b2);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--t2);
+  cursor: pointer;
+  font-family: var(--sans);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239A9A96' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+  line-height: 1;
+  height: 30px;
+}
+.fselect:focus { outline: none; border-color: var(--accent); }
+
+/* ─── Anomaly cards ─── */
+.anomaly-card {
+  background: #fff;
+  border: 1px solid var(--b1);
+  border-radius: var(--r12);
+  margin-bottom: 8px;
+  overflow: hidden;
+  box-shadow: var(--sh);
+  transition: box-shadow 0.15s, opacity 0.2s;
+}
+.anomaly-card:hover { box-shadow: 0 2px 8px rgba(30,30,30,.06), 0 8px 28px rgba(30,30,30,.07); }
+.anomaly-card.resolved { opacity: 0.6; }
+
+.card-inner { display: flex; }
+
+.card-body { flex: 1; padding: 14px 16px; min-width: 0; }
+.card-body.collapsed { padding: 10px 16px; }
+
+/* Meta row */
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.type-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--brand-bg);
+  color: var(--brand);
+}
+
+.conf-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--t2); }
+.conf-dot .d { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.conf-dot.high .d   { background: var(--crit); }
+.conf-dot.medium .d { background: var(--warn); }
+.conf-dot.low .d    { background: var(--t3); }
+
+.link-opened-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--info);
+  font-weight: 500;
+}
+.link-opened-tag svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.regressed-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--warn-bg);
+  color: var(--warn);
+  border: 1px solid var(--warn-b);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* Card title */
+.card-title {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--t1);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+/* Fordi / Forslag — plain paragraphs, no boxes */
+.card-fordi, .suggested-fix {
+  font-size: 12px;
+  color: var(--t2);
+  margin-bottom: 10px;
+  line-height: 1.55;
+}
+.card-fordi b, .suggested-fix b { font-weight: 600; color: var(--t2); }
+
+/* Source pill */
+.card-source {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r8);
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--t3);
+  margin-bottom: 10px;
+}
+.src-item b { color: var(--t2); font-weight: 600; }
+.src-sep { color: var(--b2); }
+
+/* Changes detected */
+.changes-block {
+  background: var(--info-bg);
+  border: 1px solid var(--info-b);
+  border-radius: var(--r8);
+  padding: 8px 11px;
+  margin-bottom: 10px;
+}
+.changes-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--info);
+  margin-bottom: 6px;
+}
+.diff-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.diff-before { background: var(--crit-bg); color: var(--crit); padding: 2px 7px; border-radius: 4px; }
+.diff-after  { background: var(--ok-bg);   color: var(--ok);   padding: 2px 7px; border-radius: 4px; }
+.diff-arrow  { color: var(--t3); }
+.diff-time   { font-family: var(--sans); font-size: 11px; color: var(--t3); margin-left: 2px; }
+
+/* Pending check */
+.pending-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r8);
+  padding: 7px 11px;
+  font-size: 12px;
+  color: var(--t3);
+  margin-bottom: 10px;
+}
+.spin {
+  width: 12px; height: 12px;
+  border: 1.5px solid var(--b2);
+  border-top-color: var(--info);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Action row */
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.abtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: var(--r8);
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--b2);
+  background: #fff;
+  color: var(--t2);
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+.abtn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.abtn:hover { background: var(--s1); color: var(--t1); border-color: var(--b2); }
+.abtn.brand { background: var(--brand); border-color: var(--brand); color: #fff; }
+.abtn.brand:hover { background: var(--brand-h); }
+.abtn.text { border-color: transparent; background: none; color: var(--t3); box-shadow: none; }
+.abtn.text:hover { background: var(--crit-bg); border-color: var(--crit-b); color: var(--crit); }
+.abtn.sm { padding: 3px 8px; font-size: 11px; border-radius: 6px; }
+
+/* Dismiss panel */
+.dismiss-panel {
+  background: var(--s1);
+  border-top: 1px solid var(--b1);
+  padding: 14px 16px 14px 19px;
+  display: none;
+}
+.dismiss-panel.open { display: block; }
+.dismiss-panel-head {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--t3);
+  margin-bottom: 9px;
+}
+.dismiss-warn {
+  font-size: 12px;
+  color: var(--warn);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-b);
+  border-radius: 6px;
+  padding: 7px 10px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.dismiss-opts { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+.dismiss-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--r8);
+  border: 1px solid var(--b2);
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--t2);
+  transition: all 0.1s;
+  font-family: var(--sans);
+}
+.dismiss-opt:hover { border-color: var(--brand); color: var(--t1); }
+.dismiss-opt.selected { border-color: var(--brand); background: var(--brand-bg); color: var(--brand); font-weight: 600; }
+.dismiss-opt input { display: none; }
+.opt-radio {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--b2);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.1s;
+}
+.dismiss-opt.selected .opt-radio { border-color: var(--brand); background: var(--brand); }
+.dismiss-opt.selected .opt-radio::after { content:''; width:5px; height:5px; border-radius:50%; background:#fff; }
+.dismiss-note {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--b2);
+  border-radius: var(--r8);
+  font: 12px var(--sans);
+  color: var(--t1);
+  resize: none;
+  height: 54px;
+  background: #fff;
+  margin-bottom: 10px;
+  display: none;
+  transition: border-color 0.1s;
+}
+.dismiss-note.show { display: block; }
+.dismiss-note:focus { outline: none; border-color: var(--accent); }
+.dismiss-actions { display: flex; gap: 6px; }
+.dismiss-actions .abtn[disabled] { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+/* Resolved / dismissed bar */
+.res-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 8px 19px;
+  font-size: 12px;
+  border-top: 1px solid var(--b1);
+  display: none;
+}
+.res-bar.ok  { background: var(--ok-bg); color: var(--ok); border-color: var(--ok-b); }
+.res-bar.dim { background: var(--s1); color: var(--t3); }
+.undo { font-size: 11px; font-weight: 600; color: var(--info); cursor: pointer; text-decoration: underline; }
+.undo:hover { color: #0e3d82; }
+
+/* ─── Grouped card ─── */
+.group-card {
+  background: #fff;
+  border: 1px solid var(--b1);
+  border-radius: var(--r12);
+  margin-bottom: 8px;
+  overflow: hidden;
+  box-shadow: var(--sh);
+}
+.group-members { display: none; border-top: 1px solid var(--b1); }
+.group-members.open { display: block; }
+.gmember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px 11px 19px;
+  border-bottom: 1px solid var(--b1);
+  font-size: 12px;
+}
+.gmember:last-child { border-bottom: none; }
+.gmember-info { flex: 1; }
+.gmember-title { font-weight: 600; color: var(--t1); margin-bottom: 2px; }
+.gmember-sub { font-size: 11px; color: var(--t3); }
+.gmember-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.gmore { background: var(--s1); }
+
+/* ─── Lower confidence section ─── */
+.lower-section {
+  background: #fff;
+  border: 1px solid var(--b1);
+  border-radius: var(--r12);
+  overflow: hidden;
+  box-shadow: var(--sh);
+  margin-top: 8px;
+}
+.lower-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  gap: 12px;
+}
+.lower-toggle:hover { background: var(--s1); }
+.lower-toggle-text { flex: 1; }
+.lower-toggle-title { font-size: 13px; font-weight: 600; color: var(--t2); }
+.lower-toggle-sub { font-size: 11px; color: var(--t3); margin-top: 2px; }
+.lower-chevron svg { width: 16px; height: 16px; stroke: var(--t3); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s; }
+.lower-chevron.open svg { transform: rotate(180deg); }
+.lower-items { display: none; border-top: 1px solid var(--b1); }
+.lower-items.open { display: block; }
+.lower-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px 11px 16px;
+  border-bottom: 1px solid var(--b1);
+}
+.lower-item:last-child { border-bottom: none; }
+.lower-item-info { flex: 1; }
+.lower-item-title { font-size: 12px; font-weight: 600; color: var(--t2); }
+.lower-item-sub { font-size: 11px; color: var(--t3); margin-top: 1px; }
+
+/* ─── View toggle ─── */
+.view-toggle {
+  display: inline-flex;
+  background: var(--s1);
+  border: 1px solid var(--b2);
+  border-radius: var(--r8);
+  padding: 2px;
+  gap: 1px;
+}
+.vtbtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 32px; height: 26px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--t3);
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.vtbtn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.vtbtn.active { background: #fff; color: var(--t1); box-shadow: 0 1px 3px rgba(28,28,30,0.1); }
+.vtbtn:hover:not(.active) { color: var(--t2); }
+
+/* ─── Table view ─── */
+#table-view { display: none; overflow-x: auto; }
+.anomaly-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid var(--b1);
+  border-radius: var(--r12);
+  overflow: hidden;
+  box-shadow: var(--sh);
+}
+.anomaly-table th {
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--t3);
+  background: var(--s1);
+  border-bottom: 1px solid var(--b1);
+  white-space: nowrap;
+}
+.anomaly-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--b1);
+  vertical-align: middle;
+}
+.anomaly-table tr:last-child td { border-bottom: none; }
+.anomaly-table tr:hover td { background: var(--s0); }
+.trow-title { font-weight: 600; color: var(--t1); margin-bottom: 2px; line-height: 1.35; }
+.trow-fordi { font-size: 11px; color: var(--t3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+.trow-mono { font-family: var(--mono); font-size: 11px; color: var(--t2); white-space: nowrap; }
+.trow-amount { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--t1); white-space: nowrap; }
+.trow-actions { display: flex; gap: 4px; }
+.trow-group-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--warn-bg);
+  color: var(--warn);
+  border: 1px solid var(--warn-b);
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+.trow-change-badge {
+  font-size: 10px; font-weight: 600; color: var(--info); background: var(--info-bg);
+  border: 1px solid var(--info-b); padding: 1px 5px; border-radius: 4px; margin-left: 4px;
+}
+
+/* ─── Section head ─── */
+.list-section-head {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--t3);
+  padding: 14px 0 6px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ─── Sidebar ─── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">komma<span class="comma">,</span></div>
+
+    <div class="sidebar-tabs">
+      <div class="sidebar-tab">Portefølje</div>
+      <div class="sidebar-tab active">Klient</div>
+    </div>
+
+    <div class="sidebar-client">
+      <div class="sidebar-client-avatar">T</div>
+      <div>
+        <div class="sidebar-client-name">TF Udlejning ApS</div>
+        <div class="sidebar-client-cvr">CVR 37258695</div>
+      </div>
+    </div>
+
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+      Overblik
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24"><path d="M12 3C8 8 5 12 5 15a7 7 0 0 0 14 0C19 12 16 8 12 3Z"/></svg>
+      Likviditet
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5.5-2.5 1.5-3.5A6 6 0 0 0 12 3Z"/></svg>
+      Rådgivning
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      Finansielt
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+      Budget
+    </a>
+    <a class="nav-item active" href="#">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M11 8v3l2 2"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      Controlling
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Indstillinger
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Automatik
+      <span class="nav-badge">SNART</span>
+    </a>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-firm-label">Firm manager</div>
+      <button class="sidebar-kunde-btn">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Kunde-visning
+      </button>
+      <div class="sidebar-email">
+        <span>keilstrup@gmail.com</span>
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── Main ─── -->
+  <div class="main">
+
+    <!-- Client tab bar -->
+    <div class="tab-bar">
+      <div class="client-tab active">
+        <div class="t-avatar">TU</div>
+        <span>TF Udlejning</span>
+        <span class="t-status"></span>
+        <span class="t-x">✕</span>
+      </div>
+      <div class="tab-bar-right">
+        <div class="lang-toggle">
+          <div class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</div>
+          <div class="lang-btn" id="lang-da" onclick="setLang('da')">DA</div>
+        </div>
+        <div class="tab-add">+</div>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div class="page-header-top">
+          <div>
+            <div class="page-title" data-i18n="page.title">Controlling</div>
+            <div class="page-sub">
+              <span data-i18n="page.subtag">Continuous bookkeeping scan</span> ·
+              <span data-i18n="page.updatedLabel">Last updated</span>
+              <span id="last-updated-ts" data-i18n="meta.lastUpdated">7. Jul 2026, 09:38</span>
+            </div>
+          </div>
+          <button class="abtn update-btn" id="update-btn" onclick="triggerUpdate()">
+            <svg id="update-ico" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            <span id="update-label" data-i18n="btn.update">Update</span>
+          </button>
+        </div>
+        <div class="period-nav">
+          <div class="period-btn" onclick="stepPeriod(-1)">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <div class="period-label" id="period-label">January 2026</div>
+          <div class="period-btn" onclick="stepPeriod(1)">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- ─── Scan summary ─── -->
+        <div class="scan-header">
+          <div class="scan-top">
+            <div>
+              <div class="scan-summary" data-i18n="scan.summary" data-i18n-html="true">We checked <b>4,218 entries</b> · found <b>47 things</b> · showing <b>5 worth your attention first</b></div>
+              <div class="scan-meta" data-i18n="scan.meta">Last scan: 2 minutes ago · runs continuously</div>
+            </div>
+          </div>
+          <div class="scan-chips">
+            <div class="schip danger" onclick="filterStatus(this,'open-danger')"><span class="dot"></span><span class="n" id="chip-danger">2</span> <span data-i18n="chip.danger">High confidence</span></div>
+            <div class="schip warn"   onclick="filterStatus(this,'open-warn')"><span class="dot"></span><span class="n" id="chip-warn">3</span> <span data-i18n="chip.warn">Worth a look</span></div>
+            <div class="schip ok"     onclick="filterStatus(this,'fixed')"><span class="dot"></span><span class="n" id="chip-ok">11</span> <span data-i18n="chip.ok">Reviewed (Fixed)</span></div>
+            <div class="schip muted"  onclick="filterStatus(this,'dismissed')"><span class="dot"></span><span class="n" id="chip-muted">6</span> <span data-i18n="chip.muted">Dismissed</span></div>
+          </div>
+        </div>
+
+        <!-- ─── Filter bar ─── -->
+        <div class="filter-bar">
+          <select class="fselect">
+            <option data-i18n="filter.typeAll" value="">Type: All</option>
+            <option data-i18n="filter.typeVat">VAT code</option>
+            <option data-i18n="filter.typeDup">Duplicate entry</option>
+            <option data-i18n="filter.typeMiss">Missing bilag</option>
+            <option data-i18n="filter.typeVar">Variance</option>
+            <option data-i18n="filter.typeText">Unusual text</option>
+          </select>
+          <select class="fselect" id="status-select" onchange="setStatusFilter(this.value)">
+            <option data-i18n="filter.statusOpen" value="open" selected>Status: Open</option>
+            <option data-i18n="filter.statusAll" value="all">All</option>
+            <option data-i18n="filter.statusFixed" value="fixed">Fixed</option>
+            <option data-i18n="filter.statusDismissed" value="dismissed">Dismissed</option>
+            <option data-i18n="filter.statusObsolete" value="obsolete">Obsolete</option>
+          </select>
+          <div style="margin-left:auto;">
+            <div class="view-toggle">
+              <button class="vtbtn active" id="vt-list" onclick="setView('list')" data-i18n="view.list" data-i18n-attr="title" title="List view">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="4" rx="1"/><rect x="3" y="11" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
+              </button>
+              <button class="vtbtn" id="vt-table" onclick="setView('table')" data-i18n="view.table" data-i18n-attr="title" title="Table view">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── LIST VIEW ─── -->
+        <div id="list-view">
+        <div class="list-section-head" id="section-head-high" data-i18n="section.highConf">High confidence</div>
+
+        <!-- Card 1 · Duplicate entry · high · danger -->
+        <div class="anomaly-card" id="card-1">
+          <div class="card-inner">
+            <div class="card-body" id="body-1">
+              <div class="card-meta">
+                <span class="type-chip chip-dup" data-i18n="chip.dup">Duplicate entry</span>
+                <span class="conf-dot high"><span class="d"></span><span data-i18n="conf.high">High confidence</span></span>
+              </div>
+              <div class="card-title" data-i18n="c1.title">Entry #48291 appears to be posted twice</div>
+              <div class="card-fordi" data-i18n="c1.fordi" data-i18n-html="true"><b>Fordi:</b> Two entries share the same amount (DKK 34,750.00), the same counterpart (Carlsberg A/S), and dates 3 days apart on account 3010. The probability of a legitimate double-posting at this amount is low based on historical patterns for this client.</div>
+              <div class="card-source" data-i18n="c1.source" data-i18n-html="true">
+                <span class="src-item">Entries <b>#48291 + #48294</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Amount <b>DKK 34,750.00</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Acct <b>3010 Sales</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item"><b>14. Jun 2026</b> / <b>17. Jun 2026</b></span>
+              </div>
+              <div class="card-actions">
+                <button class="abtn" onclick="openLink(this,'1')">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span data-i18n="btn.openEconomic">Open in e-conomic</span>
+                </button>
+                <button class="abtn brand" onclick="markFixed('1')">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span data-i18n="btn.markFixed">Mark Fixed</span>
+                </button>
+                <button class="abtn text" onclick="startDismiss('1')" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+          </div>
+          <div class="dismiss-panel" id="dp-1">
+            <div class="dismiss-panel-head" data-i18n="dismiss.question">Why are you dismissing this?</div>
+            <div class="dismiss-opts">
+              <div class="dismiss-opt" onclick="pickReason(this,'1',false)"><div class="opt-radio"></div><span data-i18n="reason.correct">Correct as booked</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'1',false)"><div class="opt-radio"></div><span data-i18n="reason.confirmed">Client confirmed</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'1',false)"><div class="opt-radio"></div><span data-i18n="reason.notMaterial">Not material</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'1',true)"><div class="opt-radio"></div><span data-i18n="reason.other">Other</span></div>
+            </div>
+            <textarea class="dismiss-note" id="dn-1" data-i18n="dismiss.notePlaceholder" data-i18n-attr="placeholder" placeholder="Add a note (optional)..."></textarea>
+            <div class="dismiss-actions">
+              <button class="abtn brand" id="dc-1" onclick="confirmDismiss('1')" disabled data-i18n="btn.confirmDismiss">Confirm Dismiss</button>
+              <button class="abtn" onclick="closeDismiss('1')" data-i18n="btn.cancel">Cancel</button>
+            </div>
+          </div>
+          <div class="res-bar ok" id="rb-fixed-1">
+            <span id="rb-fixed-text-1"></span>
+            <span class="undo" onclick="undoCard('1')" data-i18n="btn.undo">Undo</span>
+          </div>
+          <div class="res-bar dim" id="rb-dismissed-1">
+            <span id="rb-reason-1">Dismissed</span>
+            <span class="undo" onclick="undoCard('1')" data-i18n="btn.undo">Undo</span>
+          </div>
+        </div>
+
+        <!-- Card 2 · VAT code · high · warning · has suggested fix -->
+        <div class="anomaly-card" id="card-2">
+          <div class="card-inner">
+            <div class="card-body" id="body-2">
+              <div class="card-meta">
+                <span class="type-chip chip-vat" data-i18n="chip.vat">VAT code</span>
+                <span class="conf-dot high"><span class="d"></span><span data-i18n="conf.high">High confidence</span></span>
+              </div>
+              <div class="card-title" data-i18n="c2.title">Wrong VAT code on entry #47803 — may be EU-exempt</div>
+              <div class="card-fordi" data-i18n="c2.fordi" data-i18n-html="true"><b>Fordi:</b> Entry #47803 uses VAT code 25% (standard rate) but the description references "EU export" and counterpart Moller GmbH is a German entity. EU B2B exports are typically zero-rated under §34 MOMS, not standard-rated.</div>
+              <div class="card-source" data-i18n="c2.source" data-i18n-html="true">
+                <span class="src-item">Entry <b>#47803</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Amount <b>DKK 18,200.00</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Acct <b>2100 Export</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item"><b>9. Jun 2026</b></span>
+              </div>
+              <div class="suggested-fix" data-i18n="c2.forslag" data-i18n-html="true"><b>Suggested fix:</b> Change VAT code from <b>25% Standard</b> to <b>0% EU Export (§34)</b> on entry #47803. Verify the client's EU VAT registration number before posting.</div>
+              <div class="card-actions">
+                <button class="abtn" onclick="openLink(this,'2')">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span data-i18n="btn.openEconomic">Open in e-conomic</span>
+                </button>
+                <button class="abtn brand" onclick="markFixed('2')">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span data-i18n="btn.markFixed">Mark Fixed</span>
+                </button>
+                <button class="abtn text" onclick="startDismiss('2')" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+          </div>
+          <div class="dismiss-panel" id="dp-2">
+            <div class="dismiss-panel-head" data-i18n="dismiss.question">Why are you dismissing this?</div>
+            <div class="dismiss-opts">
+              <div class="dismiss-opt" onclick="pickReason(this,'2',false)"><div class="opt-radio"></div><span data-i18n="reason.correct">Correct as booked</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'2',false)"><div class="opt-radio"></div><span data-i18n="reason.confirmed">Client confirmed</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'2',false)"><div class="opt-radio"></div><span data-i18n="reason.notMaterial">Not material</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'2',true)"><div class="opt-radio"></div><span data-i18n="reason.other">Other</span></div>
+            </div>
+            <textarea class="dismiss-note" id="dn-2" data-i18n="dismiss.notePlaceholder" data-i18n-attr="placeholder" placeholder="Add a note (optional)..."></textarea>
+            <div class="dismiss-actions">
+              <button class="abtn brand" id="dc-2" onclick="confirmDismiss('2')" disabled data-i18n="btn.confirmDismiss">Confirm Dismiss</button>
+              <button class="abtn" onclick="closeDismiss('2')" data-i18n="btn.cancel">Cancel</button>
+            </div>
+          </div>
+          <div class="res-bar ok" id="rb-fixed-2">
+            <span id="rb-fixed-text-2"></span>
+            <span class="undo" onclick="undoCard('2')" data-i18n="btn.undo">Undo</span>
+          </div>
+          <div class="res-bar dim" id="rb-dismissed-2">
+            <span id="rb-reason-2">Dismissed</span>
+            <span class="undo" onclick="undoCard('2')" data-i18n="btn.undo">Undo</span>
+          </div>
+        </div>
+
+        <!-- ─── WORTH A LOOK cards ─── -->
+        <div class="list-section-head" id="section-head-worth" data-i18n="section.worthLook">Worth a look</div>
+
+        <!-- Card 3 · VAT code · medium · changes_detected (link was opened, change found) -->
+        <div class="anomaly-card" id="card-3">
+          <div class="card-inner">
+            <div class="card-body" id="body-3">
+              <div class="card-meta">
+                <span class="type-chip chip-vat" data-i18n="chip.vat">VAT code</span>
+                <span class="conf-dot medium"><span class="d"></span><span data-i18n="conf.medium">Medium confidence</span></span>
+                <span class="link-opened-tag">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span data-i18n="tag.linkOpened">link opened</span>
+                </span>
+              </div>
+              <div class="card-title" data-i18n="c3.title">VAT code inconsistency on entry #47612</div>
+              <div class="card-fordi" data-i18n="c3.fordi" data-i18n-html="true"><b>Fordi:</b> Entry #47612 on account 3830 (Consulting income) uses VAT code 0% but all 14 comparable entries on this account in the past 6 months used 25%. This entry is a statistical outlier.</div>
+              <div class="card-source" data-i18n="c3.source" data-i18n-html="true">
+                <span class="src-item">Entry <b>#47612</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Amount <b>DKK 9,500.00</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Acct <b>3830 Consulting</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item"><b>2. Jun 2026</b></span>
+              </div>
+              <div class="changes-block">
+                <div class="changes-label" data-i18n="tag.changeDetected">We detected a change in e-conomic</div>
+                <div class="diff-row">
+                  <span class="diff-before">VAT: 0%</span>
+                  <span class="diff-arrow">→</span>
+                  <span class="diff-after">VAT: 25%</span>
+                  <span class="diff-time" data-i18n="c3.editedAgo">· edited 14 min ago</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="abtn" onclick="openLink(this,'3')">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span data-i18n="btn.openEconomic">Open in e-conomic</span>
+                </button>
+                <button class="abtn brand" onclick="markFixed('3')">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span data-i18n="btn.markFixed">Mark Fixed</span>
+                </button>
+                <button class="abtn text" onclick="startDismiss('3')" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+          </div>
+          <div class="dismiss-panel" id="dp-3">
+            <div class="dismiss-panel-head" data-i18n="dismiss.question">Why are you dismissing this?</div>
+            <div class="dismiss-opts">
+              <div class="dismiss-opt" onclick="pickReason(this,'3',false)"><div class="opt-radio"></div><span data-i18n="reason.correct">Correct as booked</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'3',false)"><div class="opt-radio"></div><span data-i18n="reason.confirmed">Client confirmed</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'3',false)"><div class="opt-radio"></div><span data-i18n="reason.notMaterial">Not material</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'3',true)"><div class="opt-radio"></div><span data-i18n="reason.other">Other</span></div>
+            </div>
+            <textarea class="dismiss-note" id="dn-3" data-i18n="dismiss.notePlaceholder" data-i18n-attr="placeholder" placeholder="Add a note (optional)..."></textarea>
+            <div class="dismiss-actions">
+              <button class="abtn brand" id="dc-3" onclick="confirmDismiss('3')" disabled data-i18n="btn.confirmDismiss">Confirm Dismiss</button>
+              <button class="abtn" onclick="closeDismiss('3')" data-i18n="btn.cancel">Cancel</button>
+            </div>
+          </div>
+          <div class="res-bar ok" id="rb-fixed-3">
+            <span id="rb-fixed-text-3"></span>
+            <span class="undo" onclick="undoCard('3')" data-i18n="btn.undo">Undo</span>
+          </div>
+          <div class="res-bar dim" id="rb-dismissed-3">
+            <span id="rb-reason-3">Dismissed</span>
+            <span class="undo" onclick="undoCard('3')" data-i18n="btn.undo">Undo</span>
+          </div>
+        </div>
+
+        <!-- Card 4 · Missing bilag · medium · warning · pending e-conomic check -->
+        <div class="anomaly-card" id="card-4">
+          <div class="card-inner">
+            <div class="card-body" id="body-4">
+              <div class="card-meta">
+                <span class="type-chip chip-miss" data-i18n="chip.miss">Missing bilag</span>
+                <span class="conf-dot medium"><span class="d"></span><span data-i18n="conf.medium">Medium confidence</span></span>
+                <span class="link-opened-tag">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span data-i18n="tag.linkOpened">link opened</span>
+                </span>
+              </div>
+              <div class="card-title" data-i18n="c4.title">Entry #48100 has no attached documentation</div>
+              <div class="card-fordi" data-i18n="c4.fordi" data-i18n-html="true"><b>Fordi:</b> Entry #48100 (DKK 12,450.00 on account 4200 Expenses) has no attached voucher or reference number in e-conomic. Entries above DKK 5,000 on this account have had documentation in 97% of historical cases.</div>
+              <div class="card-source" data-i18n="c4.source" data-i18n-html="true">
+                <span class="src-item">Entry <b>#48100</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Amount <b>DKK 12,450.00</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item">Acct <b>4200 Expenses</b></span>
+                <span class="src-sep">·</span>
+                <span class="src-item"><b>18. Jun 2026</b></span>
+              </div>
+              <div class="pending-block">
+                <div class="spin"></div>
+                <span data-i18n="c4.pending" data-i18n-html="true">Checking e-conomic for changes… <span style="color:var(--t3);font-size:11px;margin-left:4px;">You can still mark this Fixed or Dismiss.</span></span>
+              </div>
+              <div class="card-actions">
+                <button class="abtn" onclick="openLink(this,'4')">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span data-i18n="btn.openEconomic">Open in e-conomic</span>
+                </button>
+                <button class="abtn brand" onclick="markFixed('4')">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span data-i18n="btn.markFixed">Mark Fixed</span>
+                </button>
+                <button class="abtn text" onclick="startDismiss('4')" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+          </div>
+          <div class="dismiss-panel" id="dp-4">
+            <div class="dismiss-panel-head" data-i18n="dismiss.question">Why are you dismissing this?</div>
+            <div class="dismiss-opts">
+              <div class="dismiss-opt" onclick="pickReason(this,'4',false)"><div class="opt-radio"></div><span data-i18n="reason.correct">Correct as booked</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'4',false)"><div class="opt-radio"></div><span data-i18n="reason.confirmed">Client confirmed</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'4',false)"><div class="opt-radio"></div><span data-i18n="reason.notMaterial">Not material</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'4',true)"><div class="opt-radio"></div><span data-i18n="reason.other">Other</span></div>
+            </div>
+            <textarea class="dismiss-note" id="dn-4" data-i18n="dismiss.notePlaceholder" data-i18n-attr="placeholder" placeholder="Add a note (optional)..."></textarea>
+            <div class="dismiss-actions">
+              <button class="abtn brand" id="dc-4" onclick="confirmDismiss('4')" disabled data-i18n="btn.confirmDismiss">Confirm Dismiss</button>
+              <button class="abtn" onclick="closeDismiss('4')" data-i18n="btn.cancel">Cancel</button>
+            </div>
+          </div>
+          <div class="res-bar ok" id="rb-fixed-4">
+            <span id="rb-fixed-text-4"></span>
+            <span class="undo" onclick="undoCard('4')" data-i18n="btn.undo">Undo</span>
+          </div>
+          <div class="res-bar dim" id="rb-dismissed-4">
+            <span id="rb-reason-4">Dismissed</span>
+            <span class="undo" onclick="undoCard('4')" data-i18n="btn.undo">Undo</span>
+          </div>
+        </div>
+
+        <!-- ─── Grouped card · 38 entries · VAT code · medium ─── -->
+        <div class="group-card" id="card-5">
+          <div class="card-inner">
+            <div class="card-body" id="body-5">
+              <div class="card-meta">
+                <span class="type-chip chip-vat" data-i18n="chip.vat">VAT code</span>
+                <span class="conf-dot medium"><span class="d"></span><span data-i18n="conf.medium">Medium confidence</span></span>
+                <span style="color:var(--t2);font-weight:600;font-size:12px;">· <span data-i18n="c5.count">38 entries</span></span>
+              </div>
+              <div class="card-title" data-i18n="c5.title">38 entries on account 3617 may use the wrong VAT code</div>
+              <div class="card-fordi" data-i18n="c5.fordi" data-i18n-html="true"><b>Fordi:</b> Account 3617 (License income) has 38 entries in 2026 using VAT code 25%. Based on the account description and comparable firms in this industry (NACE 6201), license income is typically zero-rated under §13. This suggests a systematic miscoding rather than isolated errors.</div>
+              <div class="card-actions">
+                <button class="abtn" id="toggle-group-btn" onclick="toggleGroup()">
+                  <svg viewBox="0 0 24 24" id="toggle-group-ico"><polyline points="6 9 12 15 18 9"/></svg>
+                  <span id="toggle-group-label" data-i18n="c5.reviewIndividually">Review 38 individually</span>
+                </button>
+                <button class="abtn">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span data-i18n="btn.openAccountEconomic">Open account in e-conomic</span>
+                </button>
+                <button class="abtn text" onclick="startDismiss('5')" data-i18n="btn.dismissGroup">Dismiss group</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expanded member list -->
+          <div class="group-members" id="group-members">
+            <div class="gmember">
+              <div class="gmember-info">
+                <div class="gmember-title" data-i18n="g.m1.title">Entry #46102 · DKK 4,200.00</div>
+                <div class="gmember-sub" data-i18n="g.m1.sub">Acct 3617 · VAT 25% · 3. Jan 2026</div>
+              </div>
+              <div class="gmember-actions">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="gmember">
+              <div class="gmember-info">
+                <div class="gmember-title" data-i18n="g.m2.title">Entry #46218 · DKK 4,200.00</div>
+                <div class="gmember-sub" data-i18n="g.m2.sub">Acct 3617 · VAT 25% · 1. Feb 2026</div>
+              </div>
+              <div class="gmember-actions">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="gmember">
+              <div class="gmember-info">
+                <div class="gmember-title" data-i18n="g.m3.title">Entry #46334 · DKK 4,200.00</div>
+                <div class="gmember-sub" data-i18n="g.m3.sub">Acct 3617 · VAT 25% · 3. Mar 2026</div>
+              </div>
+              <div class="gmember-actions">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="gmember">
+              <div class="gmember-info">
+                <div class="gmember-title" data-i18n="g.m4.title">Entry #46451 · DKK 4,200.00</div>
+                <div class="gmember-sub" data-i18n="g.m4.sub">Acct 3617 · VAT 25% · 1. Apr 2026</div>
+              </div>
+              <div class="gmember-actions">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="gmember gmore">
+              <span style="font-size:11px;color:var(--t3);" data-i18n="g.more">+ 34 more entries ·&nbsp;</span>
+              <a href="#" style="font-size:11px;font-weight:600;color:var(--info);text-decoration:none;" onclick="return false;" data-i18n="g.loadAll">Load all 38</a>
+            </div>
+          </div>
+
+          <!-- Dismiss panel for group -->
+          <div class="dismiss-panel" id="dp-5">
+            <div class="dismiss-warn" data-i18n="dismiss.groupWarn">This dismisses all <b>38 entries</b>. Each entry will receive its own audit event with this reason — no single "group dismissed" record.</div>
+            <div class="dismiss-panel-head" data-i18n="dismiss.groupQuestion">Why are you dismissing this group?</div>
+            <div class="dismiss-opts">
+              <div class="dismiss-opt" onclick="pickReason(this,'5',false)"><div class="opt-radio"></div><span data-i18n="reason.correct">Correct as booked</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'5',false)"><div class="opt-radio"></div><span data-i18n="reason.confirmed">Client confirmed</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'5',false)"><div class="opt-radio"></div><span data-i18n="reason.notMaterial">Not material</span></div>
+              <div class="dismiss-opt" onclick="pickReason(this,'5',true)"><div class="opt-radio"></div><span data-i18n="reason.other">Other</span></div>
+            </div>
+            <textarea class="dismiss-note" id="dn-5" data-i18n="dismiss.notePlaceholder" data-i18n-attr="placeholder" placeholder="Add a note (optional)..."></textarea>
+            <div class="dismiss-actions">
+              <button class="abtn brand" id="dc-5" onclick="confirmDismiss('5')" disabled data-i18n="btn.dismissAll38">Dismiss all 38 entries</button>
+              <button class="abtn" onclick="closeDismiss('5')" data-i18n="btn.cancel">Cancel</button>
+            </div>
+          </div>
+          <div class="res-bar dim" id="rb-dismissed-5" style="display:none;">
+            <span id="rb-reason-5">38 entries dismissed</span>
+            <span class="undo" onclick="undoCard('5')" data-i18n="btn.undo">Undo</span>
+          </div>
+        </div>
+
+        <!-- ─── Lower confidence section ─── -->
+        <div class="lower-section">
+          <div class="lower-toggle" onclick="toggleLower()">
+            <div class="lower-toggle-text">
+              <div class="lower-toggle-title" data-i18n="lower.title">Show 42 lower-confidence checks</div>
+              <div class="lower-toggle-sub" data-i18n="lower.sub">Scanned but below the surfacing threshold — nothing is hidden, all are in the audit trail</div>
+            </div>
+            <div class="lower-chevron" id="lower-chevron">
+              <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="lower-items" id="lower-items">
+            <div class="lower-item">
+              <span class="type-chip chip-vat" style="flex-shrink:0;font-size:9px;" data-i18n="chip.vat">VAT code</span>
+              <div class="lower-item-info">
+                <div class="lower-item-title" data-i18n="l1.title">Entry #47219 — VAT code may be incorrect</div>
+                <div class="lower-item-sub" data-i18n="l1.sub">Low confidence · Entry #47219 · DKK 2,100.00 · Acct 3010 · 28. May 2026</div>
+              </div>
+              <div style="display:flex;gap:4px;flex-shrink:0;">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="lower-item">
+              <span class="type-chip chip-var" style="flex-shrink:0;font-size:9px;" data-i18n="chip.var">Variance</span>
+              <div class="lower-item-info">
+                <div class="lower-item-title" data-i18n="l2.title">Unusual expense amount on account 4500</div>
+                <div class="lower-item-sub" data-i18n="l2.sub">Low confidence · Entry #47381 · DKK 3,850.00 · Acct 4500 · 1. Jun 2026</div>
+              </div>
+              <div style="display:flex;gap:4px;flex-shrink:0;">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="lower-item">
+              <span class="type-chip chip-text" style="flex-shrink:0;font-size:9px;" data-i18n="chip.text">Unusual text</span>
+              <div class="lower-item-info">
+                <div class="lower-item-title" data-i18n="l3.title">Entry description doesn't match account type</div>
+                <div class="lower-item-sub" data-i18n="l3.sub">Low confidence · Entry #47509 · DKK 680.00 · Acct 3200 · 4. Jun 2026</div>
+              </div>
+              <div style="display:flex;gap:4px;flex-shrink:0;">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="lower-item">
+              <span class="type-chip chip-miss" style="flex-shrink:0;font-size:9px;" data-i18n="chip.miss">Missing bilag</span>
+              <div class="lower-item-info">
+                <div class="lower-item-title" data-i18n="l4.title">Entry #47710 — no voucher attached</div>
+                <div class="lower-item-sub" data-i18n="l4.sub">Low confidence · Entry #47710 · DKK 1,900.00 · Acct 4200 · 7. Jun 2026</div>
+              </div>
+              <div style="display:flex;gap:4px;flex-shrink:0;">
+                <button class="abtn brand sm" data-i18n="btn.markFixed">Mark Fixed</button>
+                <button class="abtn text sm" data-i18n="btn.dismiss">Dismiss</button>
+              </div>
+            </div>
+            <div class="lower-item" style="background:var(--s1);justify-content:center;">
+              <span style="font-size:11px;color:var(--t3);" data-i18n="lower.more">+ 38 more ·&nbsp;</span>
+              <a href="#" style="font-size:11px;font-weight:600;color:var(--info);text-decoration:none;" onclick="return false;" data-i18n="lower.loadAll">Load all lower-confidence checks</a>
+            </div>
+          </div>
+        </div>
+        </div><!-- /#list-view -->
+
+        <!-- ─── TABLE VIEW ─── -->
+        <div id="table-view">
+          <table class="anomaly-table">
+            <thead>
+              <tr>
+                <th data-i18n="th.type">Type</th>
+                <th data-i18n="th.confidence">Confidence</th>
+                <th data-i18n="th.title">Title</th>
+                <th data-i18n="th.entry">Entry</th>
+                <th data-i18n="th.amount">Amount</th>
+                <th data-i18n="th.account">Account</th>
+                <th data-i18n="th.date">Date</th>
+                <th data-i18n="th.actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="trow-1">
+                <td><span class="type-chip chip-dup" data-i18n="chip.dup">Duplicate entry</span></td>
+                <td><span class="conf-dot high"><span class="d"></span><span data-i18n="conf.high">High confidence</span></span></td>
+                <td>
+                  <div class="trow-title" data-i18n="t1.title">Entry #48291 posted twice</div>
+                  <div class="trow-fordi" data-i18n="t1.fordi">Same amount, same counterpart (Carlsberg A/S), 3 days apart on acct 3010</div>
+                </td>
+                <td class="trow-mono">#48291 + #48294</td>
+                <td class="trow-amount">34,750.00</td>
+                <td class="trow-mono">3010 <span data-i18n="acct.sales">Sales</span></td>
+                <td style="white-space:nowrap;font-size:11px;color:var(--t3);">14. Jun 2026</td>
+                <td>
+                  <div class="trow-actions">
+                    <button class="abtn brand sm" onclick="markFixed('1')"><svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="btn.fixed">Fixed</span></button>
+                    <button class="abtn text sm" onclick="startDismiss('1')" data-i18n="btn.dismiss">Dismiss</button>
+                  </div>
+                </td>
+              </tr>
+              <tr id="trow-2">
+                <td><span class="type-chip chip-vat" data-i18n="chip.vat">VAT code</span></td>
+                <td><span class="conf-dot high"><span class="d"></span><span data-i18n="conf.high">High confidence</span></span></td>
+                <td>
+                  <div class="trow-title" data-i18n="t2.title">Wrong VAT code on entry #47803</div>
+                  <div class="trow-fordi" data-i18n="t2.fordi">EU export to Moller GmbH likely zero-rated under §34, not 25%</div>
+                </td>
+                <td class="trow-mono">#47803</td>
+                <td class="trow-amount">18,200.00</td>
+                <td class="trow-mono">2100 <span data-i18n="acct.export">Export</span></td>
+                <td style="white-space:nowrap;font-size:11px;color:var(--t3);">9. Jun 2026</td>
+                <td>
+                  <div class="trow-actions">
+                    <button class="abtn brand sm" onclick="markFixed('2')"><svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="btn.fixed">Fixed</span></button>
+                    <button class="abtn text sm" onclick="startDismiss('2')" data-i18n="btn.dismiss">Dismiss</button>
+                  </div>
+                </td>
+              </tr>
+              <tr id="trow-3">
+                <td><span class="type-chip chip-vat" data-i18n="chip.vat">VAT code</span></td>
+                <td><span class="conf-dot medium"><span class="d"></span><span data-i18n="conf.medium">Medium confidence</span></span></td>
+                <td>
+                  <div class="trow-title" data-i18n="t3.title" data-i18n-html="true">VAT code inconsistency on #47612 <span class="trow-change-badge" data-i18n="tag.changeDetectedShort">change detected</span></div>
+                  <div class="trow-fordi" data-i18n="t3.fordi">Acct 3830 Consulting — 0% vs. 25% used in all 14 comparable entries</div>
+                </td>
+                <td class="trow-mono">#47612</td>
+                <td class="trow-amount">9,500.00</td>
+                <td class="trow-mono">3830 <span data-i18n="acct.consulting">Consulting</span></td>
+                <td style="white-space:nowrap;font-size:11px;color:var(--t3);">2. Jun 2026</td>
+                <td>
+                  <div class="trow-actions">
+                    <button class="abtn brand sm" onclick="markFixed('3')"><svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="btn.fixed">Fixed</span></button>
+                    <button class="abtn text sm" onclick="startDismiss('3')" data-i18n="btn.dismiss">Dismiss</button>
+                  </div>
+                </td>
+              </tr>
+              <tr id="trow-4">
+                <td><span class="type-chip chip-miss" data-i18n="chip.miss">Missing bilag</span></td>
+                <td><span class="conf-dot medium"><span class="d"></span><span data-i18n="conf.medium">Medium confidence</span></span></td>
+                <td>
+                  <div class="trow-title" data-i18n="t4.title" data-i18n-html="true">No documentation attached to #48100 <span class="trow-change-badge" data-i18n="tag.checking">checking…</span></div>
+                  <div class="trow-fordi" data-i18n="t4.fordi">Acct 4200 Expenses — entries above 5K have docs in 97% of cases</div>
+                </td>
+                <td class="trow-mono">#48100</td>
+                <td class="trow-amount">12,450.00</td>
+                <td class="trow-mono">4200 <span data-i18n="acct.expenses">Expenses</span></td>
+                <td style="white-space:nowrap;font-size:11px;color:var(--t3);">18. Jun 2026</td>
+                <td>
+                  <div class="trow-actions">
+                    <button class="abtn brand sm" onclick="markFixed('4')"><svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="btn.fixed">Fixed</span></button>
+                    <button class="abtn text sm" onclick="startDismiss('4')" data-i18n="btn.dismiss">Dismiss</button>
+                  </div>
+                </td>
+              </tr>
+              <tr id="trow-5">
+                <td><span class="type-chip chip-vat" data-i18n="chip.vat">VAT code</span></td>
+                <td><span class="conf-dot medium"><span class="d"></span><span data-i18n="conf.medium">Medium confidence</span></span></td>
+                <td>
+                  <div class="trow-title" data-i18n="t5.title" data-i18n-html="true">38 entries on acct 3617 wrong VAT code <span class="trow-group-badge" data-i18n="c5.count">38 entries</span></div>
+                  <div class="trow-fordi" data-i18n="t5.fordi">License income likely zero-rated §13 — systematic miscoding across 2026</div>
+                </td>
+                <td class="trow-mono" data-i18n="t5.group">Group</td>
+                <td class="trow-amount">4,200.00 ×38</td>
+                <td class="trow-mono">3617 <span data-i18n="acct.license">License</span></td>
+                <td style="white-space:nowrap;font-size:11px;color:var(--t3);">2026</td>
+                <td>
+                  <div class="trow-actions">
+                    <button class="abtn text sm" onclick="startDismiss('5')" data-i18n="btn.dismissGroup">Dismiss group</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /#table-view -->
+
+      </div><!-- /content -->
+    </div><!-- /page-body -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ─── i18n ───
+const I18N = {
+  'page.title': { en: 'Controlling', da: 'Controlling' },
+  'page.subtag': { en: 'Continuous bookkeeping scan', da: 'Løbende bogføringstjek' },
+  'page.updatedLabel': { en: 'Last updated', da: 'Sidst opdateret' },
+  'meta.lastUpdated': { en: '7. Jul 2026, 09:38', da: '7. jul., 09.38' },
+  'btn.update': { en: 'Update', da: 'Opdater' },
+  'scan.summary': {
+    en: 'We checked <b>4,218 entries</b> · found <b>47 things</b> · showing <b>5 worth your attention first</b>',
+    da: 'Vi gennemgik <b>4.218 posteringer</b> · fandt <b>47 ting</b> · viser <b>5 der kræver din opmærksomhed</b>'
+  },
+  'scan.meta': { en: 'Last scan: 2 minutes ago · runs continuously', da: 'Sidste tjek: for 2 minutter siden · kører kontinuerligt' },
+  'chip.danger': { en: 'High confidence', da: 'Høj konfidens' },
+  'chip.warn': { en: 'Worth a look', da: 'Værd at kigge på' },
+  'chip.ok': { en: 'Reviewed (Fixed)', da: 'Gennemgået (rettet)' },
+  'chip.muted': { en: 'Dismissed', da: 'Afvist' },
+  'filter.typeAll': { en: 'Type: All', da: 'Type: Alle' },
+  'filter.typeVat': { en: 'VAT code', da: 'Momskode' },
+  'filter.typeDup': { en: 'Duplicate entry', da: 'Dubletpostering' },
+  'filter.typeMiss': { en: 'Missing bilag', da: 'Manglende bilag' },
+  'filter.typeVar': { en: 'Variance', da: 'Afvigelse' },
+  'filter.typeText': { en: 'Unusual text', da: 'Usædvanlig tekst' },
+  'filter.statusOpen': { en: 'Status: Open', da: 'Status: Åben' },
+  'filter.statusAll': { en: 'All', da: 'Alle' },
+  'filter.statusFixed': { en: 'Fixed', da: 'Rettet' },
+  'filter.statusDismissed': { en: 'Dismissed', da: 'Afvist' },
+  'filter.statusObsolete': { en: 'Obsolete', da: 'Forældet' },
+  'view.list': { en: 'List view', da: 'Listevisning' },
+  'view.table': { en: 'Table view', da: 'Tabelvisning' },
+  'section.highConf': { en: 'High confidence', da: 'Høj konfidens' },
+  'section.worthLook': { en: 'Worth a look', da: 'Værd at kigge på' },
+  'conf.high': { en: 'High confidence', da: 'Høj konfidens' },
+  'conf.medium': { en: 'Medium confidence', da: 'Middel konfidens' },
+  'conf.low': { en: 'Low confidence', da: 'Lav konfidens' },
+  'chip.vat': { en: 'VAT code', da: 'MOMS' },
+  'chip.dup': { en: 'Duplicate entry', da: 'Dublet' },
+  'chip.miss': { en: 'Missing bilag', da: 'Manglende bilag' },
+  'chip.var': { en: 'Variance', da: 'Afvigelse' },
+  'chip.text': { en: 'Unusual text', da: 'Usædvanlig tekst' },
+  'tag.linkOpened': { en: 'link opened', da: 'link åbnet' },
+  'tag.changeDetected': { en: 'We detected a change in e-conomic', da: 'Vi opdagede en ændring i e-conomic' },
+  'tag.changeDetectedShort': { en: 'change detected', da: 'ændring fundet' },
+  'tag.checking': { en: 'checking…', da: 'tjekker…' },
+  'btn.openEconomic': { en: 'Open in e-conomic', da: 'Åbn i e-conomic' },
+  'btn.openAccountEconomic': { en: 'Open account in e-conomic', da: 'Åbn konto i e-conomic' },
+  'btn.markFixed': { en: 'Mark Fixed', da: 'Marker rettet' },
+  'btn.fixed': { en: 'Fixed', da: 'Rettet' },
+  'btn.dismiss': { en: 'Dismiss', da: 'Afvis' },
+  'btn.dismissGroup': { en: 'Dismiss group', da: 'Afvis gruppe' },
+  'btn.dismissAll38': { en: 'Dismiss all 38 entries', da: 'Afvis alle 38 posteringer' },
+  'btn.cancel': { en: 'Cancel', da: 'Annullér' },
+  'btn.confirmDismiss': { en: 'Confirm Dismiss', da: 'Bekræft afvisning' },
+  'btn.undo': { en: 'Undo', da: 'Fortryd' },
+  'dismiss.question': { en: 'Why are you dismissing this?', da: 'Hvorfor afviser du dette?' },
+  'dismiss.groupQuestion': { en: 'Why are you dismissing this group?', da: 'Hvorfor afviser du denne gruppe?' },
+  'dismiss.groupWarn': {
+    en: 'This dismisses all <b>38 entries</b>. Each entry will receive its own audit event with this reason — no single "group dismissed" record.',
+    da: 'Dette afviser alle <b>38 posteringer</b>. Hver postering får sin egen revisionslogpost med denne årsag — der oprettes ingen samlet "gruppe afvist"-post.'
+  },
+  'dismiss.notePlaceholder': { en: 'Add a note (optional)...', da: 'Tilføj en note (valgfrit)...' },
+  'reason.correct': { en: 'Correct as booked', da: 'Korrekt som bogført' },
+  'reason.confirmed': { en: 'Client confirmed', da: 'Bekræftet af klient' },
+  'reason.notMaterial': { en: 'Not material', da: 'Ikke væsentligt' },
+  'reason.other': { en: 'Other', da: 'Andet' },
+  'c1.title': { en: 'Entry #48291 appears to be posted twice', da: 'Postering #48291 ser ud til at være bogført to gange' },
+  'c1.fordi': {
+    en: '<b>Fordi:</b> Two entries share the same amount (DKK 34,750.00), the same counterpart (Carlsberg A/S), and dates 3 days apart on account 3010. The probability of a legitimate double-posting at this amount is low based on historical patterns for this client.',
+    da: '<b>Fordi:</b> To posteringer har samme beløb (34.750,00 kr.), samme modpart (Carlsberg A/S), og datoer 3 dage fra hinanden på konto 3010. Sandsynligheden for en reel dobbeltpostering af dette beløb er lav baseret på historiske mønstre for denne klient.'
+  },
+  'c1.source': {
+    en: '<span class="src-item">Entries <b>#48291 + #48294</b></span><span class="src-sep">·</span><span class="src-item">Amount <b>DKK 34,750.00</b></span><span class="src-sep">·</span><span class="src-item">Acct <b>3010 Sales</b></span><span class="src-sep">·</span><span class="src-item"><b>14. Jun 2026</b> / <b>17. Jun 2026</b></span>',
+    da: '<span class="src-item">Posteringer <b>#48291 + #48294</b></span><span class="src-sep">·</span><span class="src-item">Beløb <b>34.750,00 kr.</b></span><span class="src-sep">·</span><span class="src-item">Konto <b>3010 Salg</b></span><span class="src-sep">·</span><span class="src-item"><b>14. jun 2026</b> / <b>17. jun 2026</b></span>'
+  },
+  'c2.title': { en: 'Wrong VAT code on entry #47803 — may be EU-exempt', da: 'Forkert momskode på postering #47803 — kan være EU-fritaget' },
+  'c2.fordi': {
+    en: '<b>Fordi:</b> Entry #47803 uses VAT code 25% (standard rate) but the description references "EU export" and counterpart Moller GmbH is a German entity. EU B2B exports are typically zero-rated under §34 MOMS, not standard-rated.',
+    da: '<b>Fordi:</b> Postering #47803 bruger momskode 25% (standardsats), men beskrivelsen henviser til "EU-eksport", og modparten Moller GmbH er en tysk virksomhed. EU B2B-eksport er typisk momsfritaget efter momslovens §34, ikke standardsats.'
+  },
+  'c2.source': {
+    en: '<span class="src-item">Entry <b>#47803</b></span><span class="src-sep">·</span><span class="src-item">Amount <b>DKK 18,200.00</b></span><span class="src-sep">·</span><span class="src-item">Acct <b>2100 Export</b></span><span class="src-sep">·</span><span class="src-item"><b>9. Jun 2026</b></span>',
+    da: '<span class="src-item">Postering <b>#47803</b></span><span class="src-sep">·</span><span class="src-item">Beløb <b>18.200,00 kr.</b></span><span class="src-sep">·</span><span class="src-item">Konto <b>2100 Eksport</b></span><span class="src-sep">·</span><span class="src-item"><b>9. jun 2026</b></span>'
+  },
+  'c2.forslag': {
+    en: '<b>Suggested fix:</b> Change VAT code from <b>25% Standard</b> to <b>0% EU Export (§34)</b> on entry #47803. Verify the client&#39;s EU VAT registration number before posting.',
+    da: '<b>Forslag:</b> Skift momskode fra <b>25% Standard</b> til <b>0% EU-eksport (§34)</b> på postering #47803. Bekræft klientens EU-momsnummer inden bogføring.'
+  },
+  'c3.title': { en: 'VAT code inconsistency on entry #47612', da: 'Momskode-uoverensstemmelse på postering #47612' },
+  'c3.fordi': {
+    en: '<b>Fordi:</b> Entry #47612 on account 3830 (Consulting income) uses VAT code 0% but all 14 comparable entries on this account in the past 6 months used 25%. This entry is a statistical outlier.',
+    da: '<b>Fordi:</b> Postering #47612 på konto 3830 (Konsulentindtægt) bruger momskode 0%, men alle 14 sammenlignelige posteringer på denne konto de seneste 6 måneder har brugt 25%. Denne postering er en statistisk afviger.'
+  },
+  'c3.source': {
+    en: '<span class="src-item">Entry <b>#47612</b></span><span class="src-sep">·</span><span class="src-item">Amount <b>DKK 9,500.00</b></span><span class="src-sep">·</span><span class="src-item">Acct <b>3830 Consulting</b></span><span class="src-sep">·</span><span class="src-item"><b>2. Jun 2026</b></span>',
+    da: '<span class="src-item">Postering <b>#47612</b></span><span class="src-sep">·</span><span class="src-item">Beløb <b>9.500,00 kr.</b></span><span class="src-sep">·</span><span class="src-item">Konto <b>3830 Konsulent</b></span><span class="src-sep">·</span><span class="src-item"><b>2. jun 2026</b></span>'
+  },
+  'c3.editedAgo': { en: '· edited 14 min ago', da: '· redigeret for 14 min. siden' },
+  'c4.title': { en: 'Entry #48100 has no attached documentation', da: 'Postering #48100 mangler bilag' },
+  'c4.fordi': {
+    en: '<b>Fordi:</b> Entry #48100 (DKK 12,450.00 on account 4200 Expenses) has no attached voucher or reference number in e-conomic. Entries above DKK 5,000 on this account have had documentation in 97% of historical cases.',
+    da: '<b>Fordi:</b> Postering #48100 (12.450,00 kr. på konto 4200 Omkostninger) har ikke noget vedhæftet bilag eller referencenummer i e-conomic. Posteringer over 5.000 kr. på denne konto har haft dokumentation i 97% af de historiske tilfælde.'
+  },
+  'c4.source': {
+    en: '<span class="src-item">Entry <b>#48100</b></span><span class="src-sep">·</span><span class="src-item">Amount <b>DKK 12,450.00</b></span><span class="src-sep">·</span><span class="src-item">Acct <b>4200 Expenses</b></span><span class="src-sep">·</span><span class="src-item"><b>18. Jun 2026</b></span>',
+    da: '<span class="src-item">Postering <b>#48100</b></span><span class="src-sep">·</span><span class="src-item">Beløb <b>12.450,00 kr.</b></span><span class="src-sep">·</span><span class="src-item">Konto <b>4200 Omkostninger</b></span><span class="src-sep">·</span><span class="src-item"><b>18. jun 2026</b></span>'
+  },
+  'c4.pending': {
+    en: 'Checking e-conomic for changes… <span style="color:var(--t3);font-size:11px;margin-left:4px;">You can still mark this Fixed or Dismiss.</span>',
+    da: 'Tjekker e-conomic for ændringer… <span style="color:var(--t3);font-size:11px;margin-left:4px;">Du kan stadig markere som rettet eller afvise.</span>'
+  },
+  'c5.count': { en: '38 entries', da: '38 posteringer' },
+  'c5.title': { en: '38 entries on account 3617 may use the wrong VAT code', da: '38 posteringer på konto 3617 bruger muligvis forkert momskode' },
+  'c5.fordi': {
+    en: '<b>Fordi:</b> Account 3617 (License income) has 38 entries in 2026 using VAT code 25%. Based on the account description and comparable firms in this industry (NACE 6201), license income is typically zero-rated under §13. This suggests a systematic miscoding rather than isolated errors.',
+    da: '<b>Fordi:</b> Konto 3617 (Licensindtægt) har 38 posteringer i 2026 med momskode 25%. Baseret på kontobeskrivelsen og sammenlignelige virksomheder i branchen (NACE 6201) er licensindtægt typisk momsfritaget efter §13. Dette tyder på en systematisk fejlkodning frem for isolerede fejl.'
+  },
+  'c5.reviewIndividually': { en: 'Review 38 individually', da: 'Gennemgå 38 individuelt' },
+  'c5.collapse': { en: 'Collapse', da: 'Skjul' },
+  'g.m1.title': { en: 'Entry #46102 · DKK 4,200.00', da: 'Postering #46102 · 4.200,00 kr.' },
+  'g.m1.sub': { en: 'Acct 3617 · VAT 25% · 3. Jan 2026', da: 'Konto 3617 · Moms 25% · 3. jan 2026' },
+  'g.m2.title': { en: 'Entry #46218 · DKK 4,200.00', da: 'Postering #46218 · 4.200,00 kr.' },
+  'g.m2.sub': { en: 'Acct 3617 · VAT 25% · 1. Feb 2026', da: 'Konto 3617 · Moms 25% · 1. feb 2026' },
+  'g.m3.title': { en: 'Entry #46334 · DKK 4,200.00', da: 'Postering #46334 · 4.200,00 kr.' },
+  'g.m3.sub': { en: 'Acct 3617 · VAT 25% · 3. Mar 2026', da: 'Konto 3617 · Moms 25% · 3. mar 2026' },
+  'g.m4.title': { en: 'Entry #46451 · DKK 4,200.00', da: 'Postering #46451 · 4.200,00 kr.' },
+  'g.m4.sub': { en: 'Acct 3617 · VAT 25% · 1. Apr 2026', da: 'Konto 3617 · Moms 25% · 1. apr 2026' },
+  'g.more': { en: '+ 34 more entries ·&nbsp;', da: '+ 34 flere posteringer ·&nbsp;' },
+  'g.loadAll': { en: 'Load all 38', da: 'Indlæs alle 38' },
+  'lower.title': { en: 'Show 42 lower-confidence checks', da: 'Vis 42 tjek med lavere konfidens' },
+  'lower.sub': {
+    en: 'Scanned but below the surfacing threshold — nothing is hidden, all are in the audit trail',
+    da: 'Gennemgået, men under tærsklen for fremhævning — intet er skjult, alle er i revisionssporet'
+  },
+  'lower.more': { en: '+ 38 more ·&nbsp;', da: '+ 38 flere ·&nbsp;' },
+  'lower.loadAll': { en: 'Load all lower-confidence checks', da: 'Indlæs alle tjek med lavere konfidens' },
+  'l1.title': { en: 'Entry #47219 — VAT code may be incorrect', da: 'Postering #47219 — momskode kan være forkert' },
+  'l1.sub': { en: 'Low confidence · Entry #47219 · DKK 2,100.00 · Acct 3010 · 28. May 2026', da: 'Lav konfidens · Postering #47219 · 2.100,00 kr. · Konto 3010 · 28. maj 2026' },
+  'l2.title': { en: 'Unusual expense amount on account 4500', da: 'Usædvanligt omkostningsbeløb på konto 4500' },
+  'l2.sub': { en: 'Low confidence · Entry #47381 · DKK 3,850.00 · Acct 4500 · 1. Jun 2026', da: 'Lav konfidens · Postering #47381 · 3.850,00 kr. · Konto 4500 · 1. jun 2026' },
+  'l3.title': { en: "Entry description doesn't match account type", da: 'Posteringstekst matcher ikke kontotype' },
+  'l3.sub': { en: 'Low confidence · Entry #47509 · DKK 680.00 · Acct 3200 · 4. Jun 2026', da: 'Lav konfidens · Postering #47509 · 680,00 kr. · Konto 3200 · 4. jun 2026' },
+  'l4.title': { en: 'Entry #47710 — no voucher attached', da: 'Postering #47710 — intet bilag vedhæftet' },
+  'l4.sub': { en: 'Low confidence · Entry #47710 · DKK 1,900.00 · Acct 4200 · 7. Jun 2026', da: 'Lav konfidens · Postering #47710 · 1.900,00 kr. · Konto 4200 · 7. jun 2026' },
+  'th.type': { en: 'Type', da: 'Type' },
+  'th.confidence': { en: 'Confidence', da: 'Konfidens' },
+  'th.title': { en: 'Title', da: 'Titel' },
+  'th.entry': { en: 'Entry', da: 'Postering' },
+  'th.amount': { en: 'Amount', da: 'Beløb' },
+  'th.account': { en: 'Account', da: 'Konto' },
+  'th.date': { en: 'Date', da: 'Dato' },
+  'th.actions': { en: 'Actions', da: 'Handlinger' },
+  'acct.sales': { en: 'Sales', da: 'Salg' },
+  'acct.export': { en: 'Export', da: 'Eksport' },
+  'acct.consulting': { en: 'Consulting', da: 'Konsulent' },
+  'acct.expenses': { en: 'Expenses', da: 'Omkostninger' },
+  'acct.license': { en: 'License', da: 'Licens' },
+  't1.title': { en: 'Entry #48291 posted twice', da: 'Postering #48291 bogført to gange' },
+  't1.fordi': { en: 'Same amount, same counterpart (Carlsberg A/S), 3 days apart on acct 3010', da: 'Samme beløb, samme modpart (Carlsberg A/S), 3 dage fra hinanden på konto 3010' },
+  't2.title': { en: 'Wrong VAT code on entry #47803', da: 'Forkert momskode på postering #47803' },
+  't2.fordi': { en: 'EU export to Moller GmbH likely zero-rated under §34, not 25%', da: 'EU-eksport til Moller GmbH er sandsynligvis momsfritaget efter §34, ikke 25%' },
+  't3.title': { en: 'VAT code inconsistency on #47612', da: 'Momskode-uoverensstemmelse på #47612' },
+  't3.fordi': { en: 'Acct 3830 Consulting — 0% vs. 25% used in all 14 comparable entries', da: 'Konto 3830 Konsulent — 0% mod 25% brugt i alle 14 sammenlignelige posteringer' },
+  't4.title': { en: 'No documentation attached to #48100', da: 'Intet bilag vedhæftet på #48100' },
+  't4.fordi': { en: 'Acct 4200 Expenses — entries above 5K have docs in 97% of cases', da: 'Konto 4200 Omkostninger — posteringer over 5.000 kr. har bilag i 97% af tilfældene' },
+  't5.title': { en: '38 entries on acct 3617 wrong VAT code', da: '38 posteringer på konto 3617 med forkert momskode' },
+  't5.fordi': { en: 'License income likely zero-rated §13 — systematic miscoding across 2026', da: 'Licensindtægt er sandsynligvis momsfritaget efter §13 — systematisk fejlkodning gennem 2026' },
+  't5.group': { en: 'Group', da: 'Gruppe' }
+};
+
+let currentLang = 'en';
+
+const TS = {
+  en: {
+    scanning: 'Scanning…',
+    update: 'Update',
+    lastScanNow: 'Last scan: just now · runs continuously',
+    fixedBy: 'Fixed by you · ',
+    dismissedPrefix: 'Dismissed · ',
+    dismissed38Prefix: '38 entries dismissed · ',
+    dismissedPlain: 'Dismissed',
+    dismissed38Plain: '38 entries dismissed',
+    months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    monthsAbbr: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  },
+  da: {
+    scanning: 'Scanner…',
+    update: 'Opdater',
+    lastScanNow: 'Sidste tjek: for et øjeblik siden · kører kontinuerligt',
+    fixedBy: 'Rettet af dig · ',
+    dismissedPrefix: 'Afvist · ',
+    dismissed38Prefix: '38 posteringer afvist · ',
+    dismissedPlain: 'Afvist',
+    dismissed38Plain: '38 posteringer afvist',
+    months: ['Januar','Februar','Marts','April','Maj','Juni','Juli','August','September','Oktober','November','December'],
+    monthsAbbr: ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec']
+  }
+};
+
+function applyI18n(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const entry = I18N[key];
+    if (!entry) return;
+    const val = entry[lang] !== undefined ? entry[lang] : entry.en;
+    const attr = el.getAttribute('data-i18n-attr');
+    if (attr) {
+      el.setAttribute(attr, val);
+    } else if (el.hasAttribute('data-i18n-html')) {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
+  });
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-da').classList.toggle('active', lang === 'da');
+  applyI18n(lang);
+  renderPeriod();
+  // Re-render any dynamic (already-resolved) status bars in the new language
+  Object.keys(state).forEach(id => {
+    if (state[id] === 'fixed') renderFixedText(id);
+    if (state[id] === 'dismissed') renderDismissedText(id, selectedReason[id]);
+  });
+  // Group toggle label
+  const label = document.getElementById('toggle-group-label');
+  if (label) label.textContent = groupOpen ? (I18N['c5.collapse'][lang] || I18N['c5.collapse'].en) : (I18N['c5.reviewIndividually'][lang] || I18N['c5.reviewIndividually'].en);
+}
+
+// ─── State ───
+const state = {}; // id -> 'open' | 'fixed' | 'dismissed'
+const selectedReason = {}; // id -> text
+
+function ts() {
+  const d = new Date();
+  const day = d.getDate();
+  const h = String(d.getHours()).padStart(2,'0');
+  const m = String(d.getMinutes()).padStart(2,'0');
+  const t = TS[currentLang];
+  if (currentLang === 'da') {
+    return `${day}. ${t.monthsAbbr[d.getMonth()]}., ${h}.${m}`;
+  }
+  return `${day}. ${t.monthsAbbr[d.getMonth()]} ${d.getFullYear()}, ${h}:${m}`;
+}
+
+function renderFixedText(id) {
+  const el = document.getElementById('rb-fixed-text-' + id);
+  const dateEl = document.getElementById('rb-date-' + id);
+  if (el) el.textContent = TS[currentLang].fixedBy + ts();
+}
+
+function renderDismissedText(id, reason) {
+  const reasonEl = document.getElementById('rb-reason-' + id);
+  if (!reasonEl) return;
+  const t = TS[currentLang];
+  if (id === '5') {
+    reasonEl.textContent = reason ? (t.dismissed38Prefix + reason) : t.dismissed38Plain;
+  } else {
+    reasonEl.textContent = reason ? (t.dismissedPrefix + reason) : t.dismissedPlain;
+  }
+}
+
+// ─── Open in e-conomic ───
+function openLink(btn, id) {
+  // In a real app this POSTs to /anomalies/{id}/open-link and opens the deep link
+  window.open('about:blank', '_blank');
+}
+
+// ─── Mark Fixed ───
+function markFixed(id) {
+  if (state[id] === 'fixed') return;
+
+  // Close dismiss panel if open
+  closeDismiss(id);
+
+  state[id] = 'fixed';
+
+  // Show resolved bar
+  const rb = document.getElementById('rb-fixed-' + id);
+  if (rb) {
+    renderFixedText(id);
+    rb.style.display = 'flex';
+  }
+  // Hide dismissed bar
+  const rbd = document.getElementById('rb-dismissed-' + id);
+  if (rbd) rbd.style.display = 'none';
+
+  // Dim card content (not the bar)
+  dimCard(id, true);
+  updateChips('fixed');
+  applyStatusFilter();
+}
+
+// ─── Dismiss flow ───
+function startDismiss(id) {
+  // Close all other panels
+  document.querySelectorAll('.dismiss-panel.open').forEach(p => {
+    const pid = p.id.replace('dp-','');
+    if (pid !== id) closeDismiss(pid);
+  });
+  const dp = document.getElementById('dp-' + id);
+  if (!dp) return;
+  const wasOpen = dp.classList.contains('open');
+  dp.classList.toggle('open', !wasOpen);
+}
+
+function closeDismiss(id) {
+  const dp = document.getElementById('dp-' + id);
+  if (!dp) return;
+  dp.classList.remove('open');
+  // Reset opts
+  dp.querySelectorAll('.dismiss-opt').forEach(o => o.classList.remove('selected'));
+  const dn = document.getElementById('dn-' + id);
+  if (dn) { dn.classList.remove('show'); dn.value = ''; }
+  const dc = document.getElementById('dc-' + id);
+  if (dc) dc.disabled = true;
+  delete selectedReason[id];
+}
+
+function pickReason(el, id, showNote) {
+  const dp = document.getElementById('dp-' + id);
+  if (!dp) return;
+  dp.querySelectorAll('.dismiss-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedReason[id] = el.textContent.trim();
+
+  const dc = document.getElementById('dc-' + id);
+  if (dc) dc.disabled = false;
+
+  const dn = document.getElementById('dn-' + id);
+  if (dn) dn.classList.toggle('show', showNote);
+}
+
+function confirmDismiss(id) {
+  const reason = selectedReason[id];
+  if (!reason) return;
+
+  state[id] = 'dismissed';
+  closeDismiss(id);
+
+  const rb = document.getElementById('rb-dismissed-' + id);
+  if (rb) {
+    renderDismissedText(id, reason);
+    rb.style.display = 'flex';
+  }
+  // Hide fixed bar
+  const rbf = document.getElementById('rb-fixed-' + id);
+  if (rbf) rbf.style.display = 'none';
+
+  dimCard(id, true);
+  updateChips('dismissed');
+  applyStatusFilter();
+}
+
+// ─── Undo ───
+function undoCard(id) {
+  const prev = state[id];
+  state[id] = 'open';
+
+  const rbf = document.getElementById('rb-fixed-' + id);
+  const rbd = document.getElementById('rb-dismissed-' + id);
+  if (rbf) rbf.style.display = 'none';
+  if (rbd) rbd.style.display = 'none';
+
+  dimCard(id, false);
+
+  if (prev === 'fixed') updateChips('undo-fixed');
+  if (prev === 'dismissed') updateChips('undo-dismissed');
+  applyStatusFilter();
+}
+
+function dimCard(id, on) {
+  // For group card (#5) target the group-card element; others are anomaly-card
+  const card = document.getElementById('card-' + id);
+  if (!card) return;
+  const body = document.getElementById('body-' + id);
+  if (body) {
+    body.style.opacity = on ? '0.55' : '';
+    body.style.pointerEvents = on ? 'none' : '';
+  }
+  // Group members too
+  const gm = document.getElementById('group-members');
+  if (id === '5' && gm) {
+    gm.style.opacity = on ? '0.55' : '';
+    gm.style.pointerEvents = on ? 'none' : '';
+  }
+}
+
+// ─── Chips (optimistic) ───
+let fixedCount = 11, dismissedCount = 6;
+function updateChips(action) {
+  if (action === 'fixed') fixedCount++;
+  if (action === 'dismissed') dismissedCount++;
+  if (action === 'undo-fixed') fixedCount = Math.max(0, fixedCount - 1);
+  if (action === 'undo-dismissed') dismissedCount = Math.max(0, dismissedCount - 1);
+  document.getElementById('chip-ok').textContent = fixedCount;
+  document.getElementById('chip-muted').textContent = dismissedCount;
+}
+
+// ─── Group toggle ───
+let groupOpen = false;
+function toggleGroup() {
+  groupOpen = !groupOpen;
+  const gm = document.getElementById('group-members');
+  const ico = document.getElementById('toggle-group-ico');
+  const label = document.getElementById('toggle-group-label');
+  if (gm) gm.classList.toggle('open', groupOpen);
+  if (ico) {
+    const poly = ico.querySelector('polyline') || ico;
+    poly.setAttribute('points', groupOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9');
+  }
+  if (label) label.textContent = groupOpen
+    ? (I18N['c5.collapse'][currentLang] || I18N['c5.collapse'].en)
+    : (I18N['c5.reviewIndividually'][currentLang] || I18N['c5.reviewIndividually'].en);
+}
+
+// ─── Lower confidence ───
+let lowerOpen = false;
+function toggleLower() {
+  lowerOpen = !lowerOpen;
+  const items = document.getElementById('lower-items');
+  const chev = document.getElementById('lower-chevron');
+  if (items) items.classList.toggle('open', lowerOpen);
+  if (chev) chev.classList.toggle('open', lowerOpen);
+}
+
+// ─── Status filter ───
+const ALL_IDS = ['1','2','3','4','5'];
+let currentStatusFilter = 'open';
+
+function statusOf(id) {
+  return state[id] || 'open';
+}
+
+function setStatusFilter(v) {
+  currentStatusFilter = v;
+  const sel = document.getElementById('status-select');
+  if (sel) sel.value = v;
+  applyStatusFilter();
+}
+
+function applyStatusFilter() {
+  ALL_IDS.forEach(id => {
+    const show = currentStatusFilter === 'all' || statusOf(id) === currentStatusFilter;
+    const card = document.getElementById('card-' + id);
+    if (card) card.style.display = show ? '' : 'none';
+    const trow = document.getElementById('trow-' + id);
+    if (trow) trow.style.display = show ? '' : 'none';
+  });
+  const highVisible  = ['1','2'].some(id => currentStatusFilter === 'all' || statusOf(id) === currentStatusFilter);
+  const worthVisible = ['3','4','5'].some(id => currentStatusFilter === 'all' || statusOf(id) === currentStatusFilter);
+  const headHigh  = document.getElementById('section-head-high');
+  const headWorth = document.getElementById('section-head-worth');
+  if (headHigh)  headHigh.style.display  = highVisible  ? '' : 'none';
+  if (headWorth) headWorth.style.display = worthVisible ? '' : 'none';
+}
+
+// Chip clicks (scan summary) jump to the matching status filter
+function filterStatus(el, s) {
+  document.querySelectorAll('.schip').forEach(c => c.classList.remove('picked'));
+  el.classList.add('picked');
+  if (s === 'fixed') setStatusFilter('fixed');
+  else if (s === 'dismissed') setStatusFilter('dismissed');
+  else setStatusFilter('open');
+}
+
+// ─── View toggle ───
+function setView(v) {
+  const listView  = document.getElementById('list-view');
+  const tableView = document.getElementById('table-view');
+  const btnList   = document.getElementById('vt-list');
+  const btnTable  = document.getElementById('vt-table');
+  if (v === 'list') {
+    listView.style.display  = 'block';
+    tableView.style.display = 'none';
+    btnList.classList.add('active');
+    btnTable.classList.remove('active');
+  } else {
+    listView.style.display  = 'none';
+    tableView.style.display = 'block';
+    btnList.classList.remove('active');
+    btnTable.classList.add('active');
+  }
+}
+
+// ─── Period navigator ───
+let periodMonth = 0; // January
+let periodYear = 2026;
+function renderPeriod() {
+  const label = document.getElementById('period-label');
+  if (label) label.textContent = `${TS[currentLang].months[periodMonth]} ${periodYear}`;
+}
+function stepPeriod(delta) {
+  periodMonth += delta;
+  if (periodMonth > 11) { periodMonth = 0; periodYear++; }
+  if (periodMonth < 0) { periodMonth = 11; periodYear--; }
+  renderPeriod();
+}
+
+// ─── Update / re-scan ───
+function triggerUpdate() {
+  const btn = document.getElementById('update-btn');
+  const ico = document.getElementById('update-ico');
+  const label = document.getElementById('update-label');
+  const metaEl = document.querySelector('.scan-meta');
+  if (btn.disabled) return;
+
+  btn.disabled = true;
+  ico.style.animation = 'spin 0.7s linear infinite';
+  label.textContent = TS[currentLang].scanning;
+  btn.style.color = 'var(--info)';
+  btn.style.borderColor = 'var(--info-b)';
+  btn.style.background = 'var(--info-bg)';
+
+  setTimeout(() => {
+    ico.style.animation = '';
+    label.textContent = TS[currentLang].update;
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    btn.style.background = '';
+    btn.disabled = false;
+    if (metaEl) metaEl.textContent = TS[currentLang].lastScanNow;
+    const tsEl = document.getElementById('last-updated-ts');
+    if (tsEl) tsEl.textContent = ts();
+  }, 2200);
+}
+
+renderPeriod();
+applyStatusFilter();
+</script>
+</body>
+</html>
