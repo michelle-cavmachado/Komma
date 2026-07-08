@@ -137,8 +137,15 @@
   .mt-delta--neg { color: var(--komma-status-critical); }
 
   /* ── Inline KPI (no card, sits directly on the page) ── */
-  .mt-inline-row { display: flex; flex-wrap: wrap; gap: var(--komma-space-6); }
-  .mt-inline-item { display: flex; align-items: baseline; gap: var(--komma-space-1); }
+  .mt-inline-row { display: flex; flex-wrap: wrap; }
+  .mt-inline-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--komma-space-1);
+    padding: 0 var(--komma-space-5);
+    border-left: 1px solid var(--komma-divider);
+  }
+  .mt-inline-item:first-child { padding-left: 0; border-left: none; }
   .mt-inline-label { font-size: var(--komma-text-small); color: var(--komma-text-secondary); }
   .mt-inline-value {
     font-family: var(--komma-font-sans);
