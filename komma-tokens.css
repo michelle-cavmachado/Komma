@@ -32,7 +32,6 @@
   /* Text / ink */
   --p-t1:    #1E1E1D;
   --p-t2:    #6E6E6A;
-  --p-t3:    #9A9A96;
   --p-ink90: #2A2A28;
   --p-ink80: #3B3B39;
   --p-light: #C6C6C2;
@@ -58,6 +57,7 @@
   --p-sans:    'Inter', system-ui, sans-serif;
   --p-display: 'Inter Tight', system-ui, sans-serif;
   --p-serif:   'Source Serif 4', Georgia, serif;
+  --p-mono:    'JetBrains Mono', ui-monospace, monospace;
 
   /* Radii */
   --p-r4:  4px;
@@ -75,7 +75,6 @@
   /* --- Text --- */
   --komma-text-primary:    var(--p-t1);
   --komma-text-secondary:  var(--p-t2);
-  --komma-text-tertiary:   var(--p-t3);
   --komma-text-disabled:   var(--p-light);
 
   /* --- Surfaces --- */
@@ -149,7 +148,7 @@
   --komma-budget-on-track: var(--komma-status-success);
   --komma-budget-watch:    var(--komma-status-warning);
   --komma-budget-over:     var(--komma-status-critical);
-  --komma-budget-draft:    var(--komma-text-tertiary);
+  --komma-budget-draft:    var(--komma-text-secondary);
 
   /* --- Overview: portfolio client health rollup --- */
   --komma-overview-ok:        var(--komma-status-success);
@@ -168,6 +167,7 @@
   --komma-font-sans:    var(--p-sans);   /* Inter — all UI text AND all in-table/inline numbers */
   --komma-font-display: var(--p-display);/* Inter Tight — ONLY large KPI/metric figures (metric-md/lg/xl) and display headings */
   --komma-font-serif:   var(--p-serif);
+  --komma-font-mono:    var(--p-mono);   /* JetBrains Mono — code, spec values, CVR/IDs */
 
   /* Sizes. Tokens < 12px MUST render uppercase (apply --komma-case-caps). */
   --komma-text-caps:    10px;  /* micro labels, tags, eyebrows — ALWAYS uppercase */
@@ -206,6 +206,8 @@
   --komma-space-4: 12px;
   --komma-space-5: 16px;
   --komma-space-6: 24px;
+  --komma-space-7: 48px;
+  --komma-space-8: 64px;
 
   --komma-shadow-card: var(--p-shadow);
 

@@ -12,9 +12,9 @@ const base: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: '6px',
-  fontFamily: "'Inter Tight', system-ui, sans-serif",
+  fontFamily: 'var(--komma-font-sans)',
   fontWeight: 600,
-  borderRadius: '8px',
+  borderRadius: 'var(--komma-radius-md)',
   border: '1px solid transparent',
   cursor: 'pointer',
   letterSpacing: '-.01em',
@@ -36,20 +36,20 @@ const sizeStyles: Record<ButtonSize, React.CSSProperties> = {
 
 const variantStyles: Record<ButtonVariant, { base: React.CSSProperties; hover: React.CSSProperties }> = {
   primary: {
-    base: { background: '#29283E', color: '#fff' },
-    hover: { background: '#1F1E30' },
+    base: { background: 'var(--komma-action-primary)', color: '#fff' },
+    hover: { background: 'var(--komma-action-primary-hover)' },
   },
   secondary: {
-    base: { background: '#FAFAFA', borderColor: 'rgba(28,28,30,0.14)', color: '#1E1E1D' },
-    hover: { background: '#F1F1EF' },
+    base: { background: 'var(--komma-surface-card)', borderColor: 'var(--komma-border-strong)', color: 'var(--komma-text-primary)' },
+    hover: { background: 'var(--komma-surface-muted)' },
   },
   destructive: {
-    base: { background: '#FAFAFA', borderColor: 'rgba(28,28,30,0.14)', color: '#C11806' },
+    base: { background: 'var(--komma-surface-card)', borderColor: 'var(--komma-border-strong)', color: 'var(--komma-status-critical)' },
     hover: {},
   },
   ghost: {
-    base: { background: 'transparent', color: '#6E6E6A', borderColor: 'transparent' },
-    hover: { background: '#F1F1EF', color: '#1E1E1D' },
+    base: { background: 'transparent', color: 'var(--komma-text-secondary)', borderColor: 'transparent' },
+    hover: { background: 'var(--komma-surface-muted)', color: 'var(--komma-text-primary)' },
   },
 }
 
