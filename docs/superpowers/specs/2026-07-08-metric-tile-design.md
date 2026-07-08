@@ -26,12 +26,19 @@ three live screens:
    cards with info + edit icons, a value, and a percentile range bar (P25 /
    Median / P75) with a colored marker showing where the current value sits.
 
+`Komma Design System.html` itself also has a fourth, pre-existing "Metric
+tiles" demo card in its Components section (`.metric`/`.m-lbl`/`.m-val`/
+`.m-d`), built with placeholder data, not a live screen. It adds a fourth
+footer shape not seen in the three live screens: a delta/trend line under the
+value (e.g. "+12.4% vs LY", colored green/red for positive/negative). This
+card is folded into the standardization below rather than treated separately.
+
 ## Goals
 
-- One `MetricTile` component definition that covers all three patterns above,
+- One `MetricTile` component definition that covers all four patterns above,
   so new pages reuse it instead of re-inventing a card.
-- Resolve the two real inconsistencies found while comparing the three
-  patterns (see Decisions below), not just visually merge them as-is.
+- Resolve the real inconsistencies found while comparing the patterns (see
+  Decisions below), not just visually merge them as-is.
 - Ship it as a standalone, framework-free HTML reference file that opens
   directly in a browser and links to the shared token file — no build step.
 
@@ -77,13 +84,19 @@ Single `MetricTile` with:
   the right. Same header markup regardless of container variant.
 - **Value**: large, bold, always `--komma-text-primary`. Size follows the
   existing `--komma-metric-md/lg/xl` scale depending on density.
-- **Footer** (slot): `caption` (small secondary-text line) or `benchmark`
+- **Footer** (slot): `caption` (small secondary-text line), `benchmark`
   (range bar with P25/Median/P75 labels and a colored position marker using
-  the existing `--komma-status-*`/`--komma-benchmark-*` tokens).
+  the existing `--komma-status-*`/`--komma-benchmark-*` tokens), or `delta`
+  (a trend line below the value — e.g. "+12.4% vs LY" — with an up/down
+  arrow, colored `--komma-status-success` for positive and
+  `--komma-status-critical` for negative; no live screen uses this yet, but
+  it replaces the old placeholder demo's pattern so it isn't lost).
 
-This was validated against a wireframe covering all three source patterns
-rebuilt with the shared header/value and the neutral-value rule; approved
-as-is.
+This was validated against a wireframe covering the three live-screen
+patterns rebuilt with the shared header/value and the neutral-value rule;
+approved as-is. The delta footer was added after that review, following the
+existing-demo discovery below, and follows the same header/value rules by
+construction — it did not need a separate visual pass.
 
 ## File layout
 
@@ -92,8 +105,9 @@ as-is.
 - `components-html/metric-tile.html`: plain HTML, `<link rel="stylesheet"
   href="../komma-tokens.css">`, no inline token duplication, no build step.
   Contains only the final standardized component and its variants (grouped,
-  standalone + dot, standalone + benchmark, size variants) — not the old
-  divergent examples.
-- `Komma Design System.html` gets one added link (in the Components section)
-  pointing to `components-html/metric-tile.html`, so the hub stays
-  navigable. This is the only edit to the bundled file.
+  standalone + dot, standalone + benchmark, standalone + delta, size
+  variants) — not the old divergent examples.
+- `Komma Design System.html`'s Components section has its existing "Metric
+  tiles" demo card (placeholder data, superseded by this work) replaced with
+  a link to `components-html/metric-tile.html`, so the hub has one source of
+  truth instead of two. This is the only edit to the bundled file.
