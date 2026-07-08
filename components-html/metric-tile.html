@@ -64,16 +64,18 @@
     font-weight: var(--komma-weight-semibold);
     color: var(--komma-text-secondary);
   }
+  .mt-label-row { display: flex; align-items: center; gap: var(--komma-space-1); }
   .mt-icons { display: flex; align-items: center; gap: var(--komma-space-2); flex-shrink: 0; }
   .mt-icon {
-    font-size: var(--komma-text-small);
+    display: inline-flex;
     color: var(--komma-text-secondary);
     background: none;
     border: none;
     padding: 0;
-    line-height: 1;
     cursor: pointer;
   }
+  .mt-icon:hover { color: var(--komma-text-primary); }
+  .mt-icon svg { width: 14px; height: 14px; }
   .mt-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .mt-dot--ok { background: var(--komma-status-success); }
   .mt-dot--warn { background: var(--komma-status-warning); }
@@ -196,7 +198,10 @@
     <div class="mt-row">
       <div class="mt-tile">
         <div class="mt-head">
-          <div class="mt-label">Available now <button class="mt-icon" aria-label="More info">&#9432;</button></div>
+          <div class="mt-label-row">
+            <span class="mt-label">Available now</span>
+            <button class="mt-icon" aria-label="More info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+          </div>
           <div class="mt-dot mt-dot--ok"></div>
         </div>
         <div class="mt-value mt-value--lg">17.1M</div>
@@ -204,7 +209,10 @@
       </div>
       <div class="mt-tile">
         <div class="mt-head">
-          <div class="mt-label">Lowest point <button class="mt-icon" aria-label="More info">&#9432;</button></div>
+          <div class="mt-label-row">
+            <span class="mt-label">Lowest point</span>
+            <button class="mt-icon" aria-label="More info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+          </div>
           <div class="mt-dot mt-dot--ok"></div>
         </div>
         <div class="mt-value mt-value--lg">16.7M</div>
@@ -212,14 +220,17 @@
       </div>
       <div class="mt-tile">
         <div class="mt-head">
-          <div class="mt-label">Weeks to cash gap <button class="mt-icon" aria-label="More info">&#9432;</button></div>
+          <div class="mt-label-row">
+            <span class="mt-label">Weeks to cash gap</span>
+            <button class="mt-icon" aria-label="More info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+          </div>
           <div class="mt-dot mt-dot--ok"></div>
         </div>
         <div class="mt-value mt-value--lg">No</div>
         <div class="mt-caption">Positive throughout the period</div>
       </div>
     </div>
-    <p class="mt-note">The status dot uses the generic <code>--komma-status-*</code> tokens (<code>.mt-dot--ok/--warn/--crit/--info</code>). Callers map their own domain state (e.g. liquidity health) onto one of these four — the component itself stays domain-agnostic. The value text stays neutral even for a qualitative answer like "No".</p>
+    <p class="mt-note">The status dot uses the generic <code>--komma-status-*</code> tokens (<code>.mt-dot--ok/--warn/--crit/--info</code>). Callers map their own domain state (e.g. liquidity health) onto one of these four — the component itself stays domain-agnostic. The value text stays neutral even for a qualitative answer like "No". Icons are <a href="https://lucide.dev" style="color:inherit;">Lucide</a> (<code>info</code> / <code>pencil</code>), inlined as raw SVG so the tile has no JS dependency — copy the <code>&lt;svg&gt;</code> markup as-is when reusing this pattern.</p>
   </div>
 
   <div class="mt-section">
@@ -229,8 +240,8 @@
         <div class="mt-head">
           <div class="mt-label">Net profit margin</div>
           <div class="mt-icons">
-            <button class="mt-icon" aria-label="More info">&#9432;</button>
-            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+            <button class="mt-icon" aria-label="More info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+            <button class="mt-icon" aria-label="Edit comparison group"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
           </div>
         </div>
         <div class="mt-value mt-value--lg">Missing</div>
@@ -243,8 +254,8 @@
         <div class="mt-head">
           <div class="mt-label">Return on equity</div>
           <div class="mt-icons">
-            <button class="mt-icon" aria-label="More info">&#9432;</button>
-            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+            <button class="mt-icon" aria-label="More info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+            <button class="mt-icon" aria-label="Edit comparison group"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
           </div>
         </div>
         <div class="mt-value mt-value--lg">18.9%</div>
@@ -257,8 +268,8 @@
         <div class="mt-head">
           <div class="mt-label">Rate of return</div>
           <div class="mt-icons">
-            <button class="mt-icon" aria-label="More info">&#9432;</button>
-            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+            <button class="mt-icon" aria-label="More info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+            <button class="mt-icon" aria-label="Edit comparison group"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
           </div>
         </div>
         <div class="mt-value mt-value--lg">0.0%</div>
@@ -271,8 +282,8 @@
         <div class="mt-head">
           <div class="mt-label">Asset turnover rate</div>
           <div class="mt-icons">
-            <button class="mt-icon" aria-label="More info">&#9432;</button>
-            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+            <button class="mt-icon" aria-label="More info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+            <button class="mt-icon" aria-label="Edit comparison group"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
           </div>
         </div>
         <div class="mt-value mt-value--lg">0.00x</div>
