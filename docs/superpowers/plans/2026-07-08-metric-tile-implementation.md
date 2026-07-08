@@ -1,0 +1,579 @@
+# Metric Tile Component Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Ship a single standardized `MetricTile` reference component as a standalone HTML file, and point the Design System hub at it in place of its stale placeholder demo.
+
+**Architecture:** One hand-authored, framework-free HTML file (`components-html/metric-tile.html`) linking the shared `komma-tokens.css`, documenting all four footer variants (caption, status dot, benchmark, delta) and both container variants (grouped, standalone) as plain markup + CSS. `Komma Design System.html` — a downloaded Artifact bundle whose real content lives inside a single JSON string in a `<script type="__bundler/template">` tag — gets that JSON string decoded, its stale "Metric tiles" demo card replaced with a link to the new file, and re-encoded back in place.
+
+**Tech Stack:** Plain HTML/CSS, no build step, no JS framework. Verification via headless Chrome screenshots (no test framework exists in this repo — it's static reference HTML).
+
+## Global Constraints
+
+- No raw hex/px color or spacing values in component CSS — reference `--komma-*` semantic tokens only (per `komma-tokens.css`'s own stated rule).
+- The new file must open standalone in a browser with no build step.
+- Do not preserve the old divergent metric-tile examples inside the new file — it documents only the standardized result.
+- The only edit to `Komma Design System.html` is replacing its Components-section "Metric tiles" card with a link. Do not touch anything else in that file.
+
+---
+
+### Task 1: Create the Metric Tile reference file
+
+**Files:**
+- Create: `components-html/metric-tile.html`
+
+**Interfaces:**
+- Consumes: `../komma-tokens.css` custom properties (`--komma-*`), already defined at the repo root — no changes needed to that file.
+- Produces: nothing consumed by later tasks in this plan (Task 2 only links to this file by path, it doesn't read its internals).
+
+- [ ] **Step 1: Create the folder and write the file**
+
+Run:
+```bash
+mkdir -p "components-html"
+```
+
+Create `components-html/metric-tile.html` with this exact content:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Komma — Metric Tile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../komma-tokens.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--komma-surface-page);
+    font-family: var(--komma-font-sans);
+    font-size: var(--komma-text-body);
+    color: var(--komma-text-primary);
+    line-height: var(--komma-line-height);
+    -webkit-font-smoothing: antialiased;
+    padding: var(--komma-space-8) var(--komma-space-6);
+  }
+  .page { max-width: 880px; margin: 0 auto; }
+  .back-link {
+    display: inline-block;
+    font-size: var(--komma-text-small);
+    color: var(--komma-text-secondary);
+    text-decoration: none;
+    margin-bottom: var(--komma-space-5);
+  }
+  .back-link:hover { color: var(--komma-text-primary); }
+  h1 {
+    font-family: var(--komma-font-display);
+    font-size: var(--komma-text-h1);
+    font-weight: var(--komma-weight-bold);
+    letter-spacing: -.015em;
+  }
+  .intro {
+    color: var(--komma-text-secondary);
+    font-size: var(--komma-text-small);
+    margin-top: var(--komma-space-2);
+    max-width: 560px;
+  }
+  .mt-section { margin-top: var(--komma-space-8); }
+  .mt-section-title {
+    font-size: var(--komma-text-caps);
+    text-transform: var(--komma-case-caps);
+    letter-spacing: .06em;
+    font-weight: var(--komma-weight-semibold);
+    color: var(--komma-text-secondary);
+    margin-bottom: var(--komma-space-3);
+  }
+  .mt-note {
+    font-size: var(--komma-text-small);
+    color: var(--komma-text-secondary);
+    margin-top: var(--komma-space-3);
+  }
+
+  /* ── Shared tile internals ── */
+  .mt-head { display: flex; align-items: center; justify-content: space-between; gap: var(--komma-space-2); }
+  .mt-label {
+    font-size: var(--komma-text-caps);
+    text-transform: var(--komma-case-caps);
+    letter-spacing: .04em;
+    font-weight: var(--komma-weight-semibold);
+    color: var(--komma-text-secondary);
+  }
+  .mt-icons { display: flex; align-items: center; gap: var(--komma-space-2); flex-shrink: 0; }
+  .mt-icon {
+    font-size: var(--komma-text-small);
+    color: var(--komma-text-secondary);
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .mt-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .mt-dot--ok { background: var(--komma-status-success); }
+  .mt-dot--warn { background: var(--komma-status-warning); }
+  .mt-dot--crit { background: var(--komma-status-critical); }
+  .mt-dot--info { background: var(--komma-status-info); }
+
+  .mt-value {
+    font-family: var(--komma-font-display);
+    font-weight: var(--komma-weight-bold);
+    color: var(--komma-text-primary);
+    letter-spacing: -.015em;
+    font-variant-numeric: tabular-nums;
+    margin-top: var(--komma-space-2);
+  }
+  .mt-value--md { font-size: var(--komma-metric-md); }
+  .mt-value--lg { font-size: var(--komma-metric-lg); }
+  .mt-value--xl { font-size: var(--komma-metric-xl); }
+
+  .mt-caption {
+    font-size: var(--komma-text-small);
+    color: var(--komma-text-secondary);
+    margin-top: var(--komma-space-1);
+  }
+
+  .mt-bench { margin-top: var(--komma-space-3); }
+  .mt-bench-bar {
+    position: relative;
+    height: 4px;
+    background: var(--komma-divider);
+    border-radius: var(--komma-radius-sm);
+  }
+  .mt-bench-marker {
+    position: absolute;
+    top: -3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--komma-surface-card);
+    box-shadow: 0 0 0 1px var(--komma-border);
+  }
+  .mt-bench-marker--above { background: var(--komma-benchmark-above); }
+  .mt-bench-marker--inline { background: var(--komma-benchmark-inline); }
+  .mt-bench-marker--below { background: var(--komma-benchmark-below); }
+  .mt-bench-marker--missing { background: var(--komma-benchmark-missing); }
+  .mt-bench-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--komma-text-caps);
+    color: var(--komma-text-secondary);
+    margin-top: var(--komma-space-2);
+  }
+
+  .mt-delta {
+    font-size: var(--komma-text-small);
+    margin-top: var(--komma-space-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .mt-delta--pos { color: var(--komma-status-success); }
+  .mt-delta--neg { color: var(--komma-status-critical); }
+
+  /* ── Containers ── */
+  .mt-row { display: flex; gap: var(--komma-space-4); }
+  .mt-group {
+    display: flex;
+    border: 1px solid var(--komma-border);
+    border-radius: var(--komma-radius-lg);
+    background: var(--komma-surface-card);
+    overflow: hidden;
+  }
+  .mt-segment {
+    flex: 1;
+    padding: var(--komma-space-4) var(--komma-space-5);
+    border-right: 1px solid var(--komma-divider);
+  }
+  .mt-segment:last-child { border-right: none; }
+  .mt-tile {
+    flex: 1;
+    padding: var(--komma-space-4) var(--komma-space-5);
+    border: 1px solid var(--komma-border);
+    border-radius: var(--komma-radius-md);
+    background: var(--komma-surface-card);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="back-link" href="../Komma%20Design%20System.html">&larr; Komma Design System</a>
+  <h1>Metric Tile</h1>
+  <p class="intro">One component for every metric card on the platform. Header and value are identical everywhere; only the container (grouped / standalone) and the footer (caption / status dot / benchmark / delta) change per use case. The value is always neutral — status is communicated only through an indicator, never by recoloring the number.</p>
+
+  <div class="mt-section">
+    <div class="mt-section-title">Grouped — related simple counts</div>
+    <div class="mt-group">
+      <div class="mt-segment">
+        <div class="mt-label">Clients</div>
+        <div class="mt-value mt-value--lg">5</div>
+        <div class="mt-caption">all active</div>
+      </div>
+      <div class="mt-segment">
+        <div class="mt-label">Requires attention</div>
+        <div class="mt-value mt-value--lg">0</div>
+        <div class="mt-caption">clients</div>
+      </div>
+      <div class="mt-segment">
+        <div class="mt-label">Pending card</div>
+        <div class="mt-value mt-value--lg">0</div>
+        <div class="mt-caption">postings</div>
+      </div>
+      <div class="mt-segment">
+        <div class="mt-label">Sync error</div>
+        <div class="mt-value mt-value--lg">0</div>
+        <div class="mt-caption">clients</div>
+      </div>
+    </div>
+    <p class="mt-note">No per-segment border, no icons, no status — just a scannable ribbon of related counts. Segments divide with a hairline (<code>--komma-divider</code>) inside one shared border.</p>
+  </div>
+
+  <div class="mt-section">
+    <div class="mt-section-title">Standalone + status dot</div>
+    <div class="mt-row">
+      <div class="mt-tile">
+        <div class="mt-head">
+          <div class="mt-label">Available now <button class="mt-icon" aria-label="More info">&#9432;</button></div>
+          <div class="mt-dot mt-dot--ok"></div>
+        </div>
+        <div class="mt-value mt-value--lg">17.1M</div>
+        <div class="mt-caption">8 bank accounts</div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-head">
+          <div class="mt-label">Lowest point <button class="mt-icon" aria-label="More info">&#9432;</button></div>
+          <div class="mt-dot mt-dot--ok"></div>
+        </div>
+        <div class="mt-value mt-value--lg">16.7M</div>
+        <div class="mt-caption">Week 40</div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-head">
+          <div class="mt-label">Weeks to cash gap <button class="mt-icon" aria-label="More info">&#9432;</button></div>
+          <div class="mt-dot mt-dot--ok"></div>
+        </div>
+        <div class="mt-value mt-value--lg">No</div>
+        <div class="mt-caption">Positive throughout the period</div>
+      </div>
+    </div>
+    <p class="mt-note">The status dot uses the generic <code>--komma-status-*</code> tokens (<code>.mt-dot--ok/--warn/--crit/--info</code>). Callers map their own domain state (e.g. liquidity health) onto one of these four — the component itself stays domain-agnostic. The value text stays neutral even for a qualitative answer like "No".</p>
+  </div>
+
+  <div class="mt-section">
+    <div class="mt-section-title">Standalone + benchmark</div>
+    <div class="mt-row">
+      <div class="mt-tile">
+        <div class="mt-head">
+          <div class="mt-label">Net profit margin</div>
+          <div class="mt-icons">
+            <button class="mt-icon" aria-label="More info">&#9432;</button>
+            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+          </div>
+        </div>
+        <div class="mt-value mt-value--lg">Missing</div>
+        <div class="mt-bench">
+          <div class="mt-bench-bar"><div class="mt-bench-marker mt-bench-marker--missing" style="left: 40%;"></div></div>
+          <div class="mt-bench-labels"><span>P25 -0.7%</span><span>Median 31.4%</span><span>P75 79.5%</span></div>
+        </div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-head">
+          <div class="mt-label">Return on equity</div>
+          <div class="mt-icons">
+            <button class="mt-icon" aria-label="More info">&#9432;</button>
+            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+          </div>
+        </div>
+        <div class="mt-value mt-value--lg">18.9%</div>
+        <div class="mt-bench">
+          <div class="mt-bench-bar"><div class="mt-bench-marker mt-bench-marker--above" style="left: 82%;"></div></div>
+          <div class="mt-bench-labels"><span>P25 -2.6%</span><span>Median 2.7%</span><span>P75 12.6%</span></div>
+        </div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-head">
+          <div class="mt-label">Rate of return</div>
+          <div class="mt-icons">
+            <button class="mt-icon" aria-label="More info">&#9432;</button>
+            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+          </div>
+        </div>
+        <div class="mt-value mt-value--lg">0.0%</div>
+        <div class="mt-bench">
+          <div class="mt-bench-bar"><div class="mt-bench-marker mt-bench-marker--inline" style="left: 22%;"></div></div>
+          <div class="mt-bench-labels"><span>P25 -3.5%</span><span>Median 1.2%</span><span>P75 6.9%</span></div>
+        </div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-head">
+          <div class="mt-label">Asset turnover rate</div>
+          <div class="mt-icons">
+            <button class="mt-icon" aria-label="More info">&#9432;</button>
+            <button class="mt-icon" aria-label="Edit comparison group">&#9998;</button>
+          </div>
+        </div>
+        <div class="mt-value mt-value--lg">0.00x</div>
+        <div class="mt-bench">
+          <div class="mt-bench-bar"><div class="mt-bench-marker mt-bench-marker--below" style="left: 8%;"></div></div>
+          <div class="mt-bench-labels"><span>P25 0.03x</span><span>Median 0.08x</span><span>P75 0.27x</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="mt-note">The marker uses the purpose-built <code>--komma-benchmark-above/inline/below/missing</code> tokens, never the generic status tokens — this footer's percentile semantics are already modeled in <code>komma-tokens.css</code>. The value never recolors, matching the status-dot variant's rule.</p>
+  </div>
+
+  <div class="mt-section">
+    <div class="mt-section-title">Standalone + delta / trend</div>
+    <div class="mt-row">
+      <div class="mt-tile">
+        <div class="mt-label">Omsætning ÅTD</div>
+        <div class="mt-value mt-value--lg">2,8 mio.</div>
+        <div class="mt-delta mt-delta--pos">&#8593; +12,4% vs LY</div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-label">Bruttomargin</div>
+        <div class="mt-value mt-value--lg">31,2%</div>
+        <div class="mt-delta mt-delta--neg">&#8595; -8,3pp vs LY</div>
+      </div>
+    </div>
+    <p class="mt-note">No live screen uses this yet — it replaces the delta pattern from the old placeholder demo in the Design System hub so it isn't lost. Positive/negative color the delta line only, using the generic status tokens; the value itself stays neutral.</p>
+  </div>
+
+  <div class="mt-section">
+    <div class="mt-section-title">Sizes</div>
+    <div class="mt-row">
+      <div class="mt-tile">
+        <div class="mt-label">Dense grid</div>
+        <div class="mt-value mt-value--md">20.4%</div>
+        <div class="mt-caption">--komma-metric-md · 20px</div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-label">Default</div>
+        <div class="mt-value mt-value--lg">20.4%</div>
+        <div class="mt-caption">--komma-metric-lg · 24px</div>
+      </div>
+      <div class="mt-tile">
+        <div class="mt-label">Hero / single number</div>
+        <div class="mt-value mt-value--xl">20.4%</div>
+        <div class="mt-caption">--komma-metric-xl · 28px</div>
+      </div>
+    </div>
+    <p class="mt-note">Default is <code>--komma-metric-lg</code>. Use <code>md</code> when many tiles compete for space in a dense grid, <code>xl</code> for a single hero figure (e.g. Liquidity's "Available now").</p>
+  </div>
+</div>
+</body>
+</html>
+```
+
+- [ ] **Step 2: Render it and check for errors**
+
+Run:
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu \
+  --screenshot="/tmp/metric-tile.png" --window-size=1000,2000 \
+  "file:///Users/michellemachado/Downloads/Visma Downloads/Komma/components-html/metric-tile.html"
+```
+Expected: command exits 0 and `/tmp/metric-tile.png` is created (check with `ls -la /tmp/metric-tile.png`) — a zero-byte or missing file means the page failed to load.
+
+- [ ] **Step 3: Visually verify against the spec**
+
+Read `/tmp/metric-tile.png` with the Read tool and confirm, section by section:
+- Grouped section: one bordered strip, four segments divided by thin internal lines, no per-segment border.
+- Status-dot section: three separate bordered cards with a gap between them, each with an info icon next to its label and a green dot at the top-right; the "No" value is neutral/dark, not green.
+- Benchmark section: four separate bordered cards, each with info + edit icons top-right, a range bar below the value with a colored marker (grey/green/orange/red across the four cards) and P25/Median/P75 labels.
+- Delta section: two cards with a colored trend line under the value (green for the positive one, red for the negative one); the value itself stays neutral.
+- Sizes section: three cards showing visibly increasing value font size left to right.
+
+If any section doesn't match, fix `components-html/metric-tile.html` and re-run Step 2.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add components-html/metric-tile.html
+git commit -m "$(cat <<'EOF'
+Add standalone Metric Tile reference component
+
+Standardizes the four metric-tile patterns found across the platform
+(grouped counts, status-dot KPI, benchmark, delta/trend) into one
+component definition, per docs/superpowers/specs/2026-07-08-metric-tile-design.md.
+EOF
+)"
+```
+
+---
+
+### Task 2: Link the Metric Tile reference from the Design System hub
+
+**Files:**
+- Modify: `Komma Design System.html` (the Components section's "Metric tiles" demo card)
+
+**Interfaces:**
+- Consumes: `components-html/metric-tile.html` (Task 1's output) — only its path, via a relative `<a href>`.
+- Produces: nothing consumed by later tasks.
+
+**Background:** `Komma Design System.html` is a self-contained Artifact bundle. Its actual page markup is not directly in the file — it's a JSON-encoded string inside `<script type="__bundler/template">...</script>`, which a bootstrap script (also in the file) decodes and swaps in as the document body at load time via `document.documentElement.replaceWith(...)` — this does **not** change the document's URL, so relative links inside the template resolve against the original file's own folder. That's why a relative `href="components-html/metric-tile.html"` will work correctly when someone opens `Komma Design System.html` directly from disk.
+
+Editing that JSON string in place with a text editor is impractical (it's one ~100KB line). Instead: decode it to plain HTML with Python, edit the plain HTML, re-encode, and splice it back between the same two script-tag markers.
+
+- [ ] **Step 1: Decode the template to a scratch file**
+
+Run:
+```bash
+python3 -c "
+import json
+data = open('Komma Design System.html', encoding='utf-8').read()
+i = data.find('<script type=\"__bundler/template\">')
+j = i + len('<script type=\"__bundler/template\">')
+k = data.find('</script>', j)
+html = json.loads(data[j:k])
+open('/tmp/design_system_decoded.html', 'w', encoding='utf-8').write(html)
+print('decoded', len(html), 'chars')
+"
+```
+Expected: prints `decoded 98088 chars` (or close to it — the exact count may drift slightly from prior edits, that's fine as long as it's non-zero and no traceback is printed).
+
+- [ ] **Step 2: Confirm the exact card markup to replace**
+
+Run:
+```bash
+grep -n '<!-- Metrics -->' -A 26 /tmp/design_system_decoded.html
+```
+Expected: this exact block (confirm it matches before editing — if the surrounding file has drifted, adjust Step 3's `old_string` to match what's actually there):
+```html
+    <!-- Metrics -->
+    <div class="card card-p">
+      <span class="card-label">Metric tiles</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="metric" style="border-radius: 4px;">
+          <div class="m-lbl">Omsætning ÅTD <span class="pill ok" style="font-size:10px;padding:1px 5px;">+</span></div>
+          <div class="m-val">2,8 mio.</div>
+          <div class="m-d pos">+12,4 % vs LY</div>
+        </div>
+        <div class="metric">
+          <div class="m-lbl">Bruttomargin <span class="pill crit" style="font-size:10px;padding:1px 5px;">↓</span></div>
+          <div class="m-val">31,2 %</div>
+          <div class="m-d neg">−8,3 pp vs LY</div>
+        </div>
+        <div class="metric">
+          <div class="m-lbl">Likviditet <span class="pill ok" style="font-size:10px;padding:1px 5px;">OK</span></div>
+          <div class="m-val">642 t.kr.</div>
+          <div class="m-d pos">+27 % q/q</div>
+        </div>
+        <div class="metric">
+          <div class="m-lbl">Debitor-dage <span class="pill warn" style="font-size:10px;padding:1px 5px;">!</span></div>
+          <div class="m-val">47</div>
+          <div class="m-d neg">+9 d vs target</div>
+        </div>
+      </div>
+    </div>
+```
+
+- [ ] **Step 3: Replace the card with a link, using the Edit tool**
+
+Use the Edit tool on `/tmp/design_system_decoded.html` with:
+
+old_string (must match Step 2's output exactly):
+```html
+    <!-- Metrics -->
+    <div class="card card-p">
+      <span class="card-label">Metric tiles</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="metric" style="border-radius: 4px;">
+          <div class="m-lbl">Omsætning ÅTD <span class="pill ok" style="font-size:10px;padding:1px 5px;">+</span></div>
+          <div class="m-val">2,8 mio.</div>
+          <div class="m-d pos">+12,4 % vs LY</div>
+        </div>
+        <div class="metric">
+          <div class="m-lbl">Bruttomargin <span class="pill crit" style="font-size:10px;padding:1px 5px;">↓</span></div>
+          <div class="m-val">31,2 %</div>
+          <div class="m-d neg">−8,3 pp vs LY</div>
+        </div>
+        <div class="metric">
+          <div class="m-lbl">Likviditet <span class="pill ok" style="font-size:10px;padding:1px 5px;">OK</span></div>
+          <div class="m-val">642 t.kr.</div>
+          <div class="m-d pos">+27 % q/q</div>
+        </div>
+        <div class="metric">
+          <div class="m-lbl">Debitor-dage <span class="pill warn" style="font-size:10px;padding:1px 5px;">!</span></div>
+          <div class="m-val">47</div>
+          <div class="m-d neg">+9 d vs target</div>
+        </div>
+      </div>
+    </div>
+```
+
+new_string:
+```html
+    <!-- Metrics -->
+    <div class="card card-p">
+      <span class="card-label">Metric tiles</span>
+      <p style="font-size:12px;color:var(--komma-text-secondary);line-height:1.6;margin-bottom:10px;">Grouped counts, status-dot KPI, benchmark and delta/trend variants — standardized and moved to its own reference file.</p>
+      <a href="components-html/metric-tile.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--komma-action-primary);text-decoration:none;">
+        View Metric Tile reference &rarr;
+      </a>
+    </div>
+```
+
+- [ ] **Step 4: Re-encode and splice back into `Komma Design System.html`**
+
+Run:
+```bash
+python3 -c "
+import json
+edited = open('/tmp/design_system_decoded.html', encoding='utf-8').read()
+data = open('Komma Design System.html', encoding='utf-8').read()
+i = data.find('<script type=\"__bundler/template\">')
+j = i + len('<script type=\"__bundler/template\">')
+k = data.find('</script>', j)
+new_data = data[:j] + json.dumps(edited, ensure_ascii=False) + data[k:]
+open('Komma Design System.html', 'w', encoding='utf-8').write(new_data)
+print('wrote', len(new_data), 'chars')
+"
+```
+Expected: prints `wrote <some number> chars` with no traceback.
+
+- [ ] **Step 5: Verify the edit landed correctly**
+
+Run:
+```bash
+python3 -c "
+import json
+data = open('Komma Design System.html', encoding='utf-8').read()
+i = data.find('<script type=\"__bundler/template\">')
+j = i + len('<script type=\"__bundler/template\">')
+k = data.find('</script>', j)
+html = json.loads(data[j:k])
+assert 'components-html/metric-tile.html' in html, 'link missing'
+assert 'Omsætning ÅTD' not in html, 'stale placeholder still present'
+print('OK: link present, stale card removed')
+"
+```
+Expected: `OK: link present, stale card removed`. If either assertion fails, re-open `/tmp/design_system_decoded.html`, fix it, and repeat Steps 4–5.
+
+- [ ] **Step 6: Screenshot both files to confirm nothing broke**
+
+Run:
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu \
+  --virtual-time-budget=5000 \
+  --screenshot="/tmp/design-system-after.png" --window-size=1600,1400 \
+  "file:///Users/michellemachado/Downloads/Visma Downloads/Komma/Komma Design System.html"
+```
+Expected: command exits 0 and `/tmp/design-system-after.png` is created and non-empty (`ls -la /tmp/design-system-after.png`) — the extra `--virtual-time-budget` gives the bundle's async asset-unpacking script time to finish before the screenshot is taken.
+
+Read `/tmp/design-system-after.png` with the Read tool and confirm the page rendered normally (not stuck on the "Unpacking…" loading indicator, no visible `[bundle]` error banner) and that the Components section's Metric tiles card now shows the short description + "View Metric Tile reference →" link instead of the four placeholder cards.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add "Komma Design System.html"
+git commit -m "$(cat <<'EOF'
+Link Metric Tile reference from the Design System hub
+
+Replaces the stale placeholder "Metric tiles" demo card in the Components
+section with a link to components-html/metric-tile.html, so there's one
+source of truth for the component instead of two.
+EOF
+)"
+```
