@@ -136,6 +136,22 @@
   .mt-delta--pos { color: var(--komma-status-success); }
   .mt-delta--neg { color: var(--komma-status-critical); }
 
+  /* ── Inline KPI (no card, sits directly on the page) ── */
+  .mt-inline-row { display: flex; flex-wrap: wrap; gap: var(--komma-space-6); }
+  .mt-inline-item { display: flex; align-items: baseline; gap: var(--komma-space-1); }
+  .mt-inline-label { font-size: var(--komma-text-small); color: var(--komma-text-secondary); }
+  .mt-inline-value {
+    font-family: var(--komma-font-sans);
+    font-size: var(--komma-text-body);
+    font-weight: var(--komma-weight-bold);
+    color: var(--komma-text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .mt-inline-delta { font-size: var(--komma-text-small); }
+  .mt-inline-delta--pos { color: var(--komma-status-success); }
+  .mt-inline-delta--neg { color: var(--komma-status-critical); }
+  .mt-inline-delta--na { color: var(--komma-text-secondary); }
+
   /* ── Containers ── */
   .mt-row { display: flex; gap: var(--komma-space-4); }
   .mt-group {
@@ -164,7 +180,7 @@
 <div class="page">
   <a class="back-link" href="../Komma%20Design%20System.html">&larr; Komma Design System</a>
   <h1>Metric Tile</h1>
-  <p class="intro">One component for every metric card on the platform. Header and value are identical everywhere; only the container (grouped / standalone) and the footer (caption / status dot / benchmark / delta) change per use case. The value is always neutral — status is communicated only through an indicator, never by recoloring the number.</p>
+  <p class="intro">One component for every metric card on the platform. Header and value are identical everywhere; only the container (grouped / standalone / inline) and the footer (caption / status dot / benchmark / delta) change per use case. The value is always neutral — status is communicated only through an indicator, never by recoloring the number.</p>
 
   <div class="mt-section">
     <div class="mt-section-title">Grouped — related simple counts</div>
@@ -191,6 +207,33 @@
       </div>
     </div>
     <p class="mt-note">No per-segment border, no icons, no status — just a scannable ribbon of related counts. Segments divide with a hairline (<code>--komma-divider</code>) inside one shared border.</p>
+  </div>
+
+  <div class="mt-section">
+    <div class="mt-section-title">Inline — page header KPIs</div>
+    <div class="mt-inline-row">
+      <div class="mt-inline-item">
+        <span class="mt-inline-label">Revenue (YTD)</span>
+        <span class="mt-inline-value">94 thousand kr.</span>
+        <span class="mt-inline-delta mt-inline-delta--na">n/a</span>
+      </div>
+      <div class="mt-inline-item">
+        <span class="mt-inline-label">Coverage rate</span>
+        <span class="mt-inline-value">100.0%</span>
+        <span class="mt-inline-delta mt-inline-delta--na">n/a</span>
+      </div>
+      <div class="mt-inline-item">
+        <span class="mt-inline-label">Disposable liquid.</span>
+        <span class="mt-inline-value">17,149 thousand kr.</span>
+        <span class="mt-inline-delta mt-inline-delta--pos">+52.5%</span>
+      </div>
+      <div class="mt-inline-item">
+        <span class="mt-inline-label">Debtor days</span>
+        <span class="mt-inline-value">1089 days</span>
+        <span class="mt-inline-delta mt-inline-delta--na">n/a</span>
+      </div>
+    </div>
+    <p class="mt-note">No card, no border — sits directly on the page background, for KPIs living in a page header/toolbar alongside other prose (breadcrumb, CVR, last-updated). This is the one place the label stays sentence-case and sits inline before the value, instead of caps-above-value like every other variant. The trailing tag is neutral <code>n/a</code> when there's nothing to compare against — never a placeholder word — and only turns green/red (<code>--komma-status-success/critical</code>) for an actual delta. The value uses <code>--komma-font-sans</code>, not the display font: per the type scale, Inter Tight is reserved for large KPI figures (<code>--komma-metric-*</code>), and this value is deliberately smaller than those.</p>
   </div>
 
   <div class="mt-section">
