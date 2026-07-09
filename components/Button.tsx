@@ -1,6 +1,6 @@
 import React from 'react'
 
-type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'ghost'
+type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'destructive' | 'ghost'
 type ButtonSize = 'default' | 'small'
 
 type ButtonProps = {
@@ -42,6 +42,10 @@ const variantStyles: Record<ButtonVariant, { base: React.CSSProperties; hover: R
   secondary: {
     base: { background: 'var(--komma-surface-card)', borderColor: 'var(--komma-border-strong)', color: 'var(--komma-text-primary)' },
     hover: { background: 'var(--komma-surface-muted)' },
+  },
+  tertiary: {
+    base: { background: 'var(--komma-navy-glow)', color: 'var(--komma-text-primary)' },
+    hover: { borderColor: 'var(--komma-border)' },
   },
   destructive: {
     base: { background: 'var(--komma-surface-card)', borderColor: 'var(--komma-border-strong)', color: 'var(--komma-status-critical)' },

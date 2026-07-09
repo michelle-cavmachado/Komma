@@ -42,6 +42,13 @@
   --p-brand-bg:     #ECECF1;
   --p-brand-b:      #D6D6E0;
   --p-accent-light: #9B99C4;
+  --p-navy-glow:    rgba(98,97,113,0.12);   /* #6261711F */
+
+  /* Client tab bar (component-specific alpha variants of --p-brand) */
+  --p-client-tab-bg:            rgba(41,40,62,0.72); /* #29283Eb8 */
+  --p-client-tab-menu-bg:       rgba(41,40,62,0.92); /* #29283Eeb */
+  --p-client-tab-active-shadow: 0 1px 3px rgba(20,20,30,0.18);  /* #14141e2e */
+  --p-client-tab-menu-shadow:   0 18px 50px rgba(20,20,30,0.30); /* #14141e4d */
 
   /* Status families (each: fg / bg / border) */
   --p-ok:    #057F34;  --p-ok-bg:   #E6F4EC;  --p-ok-b:   #A7D8BB;
@@ -101,6 +108,7 @@
   --komma-action-primary-bg:    var(--p-brand-bg);
   --komma-action-primary-border:var(--p-brand-b);
   --komma-accent:               var(--p-accent-light);
+  --komma-navy-glow:            var(--p-navy-glow);
 
   /* --- Status (generic, used across ALL modules) --- */
   --komma-status-success:        var(--p-ok);
@@ -221,4 +229,14 @@
   --komma-filterbar-height: 40px;
   --komma-copilot-width:    420px;
   --komma-row-height:       40px;
+
+  /* ========================================================
+     CLIENT TAB BAR — top nav client-switcher tabs only.
+     Intentionally NOT --komma-* prefixed: component-specific,
+     not part of the general semantic scale.
+     ======================================================== */
+  --client-tab-bg:            var(--p-client-tab-bg);
+  --client-tab-menu-bg:       var(--p-client-tab-menu-bg);
+  --client-tab-active-shadow: var(--p-client-tab-active-shadow);
+  --client-tab-menu-shadow:   var(--p-client-tab-menu-shadow);
 }

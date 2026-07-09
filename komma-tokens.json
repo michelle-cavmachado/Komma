@@ -10,6 +10,13 @@
     },
     "ink": { "t1": "#1E1E1D", "t2": "#6E6E6A", "ink90": "#2A2A28", "ink80": "#3B3B39", "light": "#C6C6C2" },
     "brand": { "base": "#29283E", "hover": "#1F1E30", "bg": "#ECECF1", "border": "#D6D6E0", "accentLight": "#9B99C4" },
+    "navyGlow": "rgba(98,97,113,0.12)",
+    "clientTab": {
+      "bg72":     "rgba(41,40,62,0.72)",
+      "bg92":     "rgba(41,40,62,0.92)",
+      "shadowSm": "0 1px 3px rgba(20,20,30,0.18)",
+      "shadowLg": "0 18px 50px rgba(20,20,30,0.30)"
+    },
     "status": {
       "ok":   { "fg": "#057F34", "bg": "#E6F4EC", "border": "#A7D8BB" },
       "warn": { "fg": "#A06000", "bg": "#FDF3E0", "border": "#E8CFA0" },
@@ -52,6 +59,7 @@
       "primaryBg": "{primitive.brand.bg}", "primaryBorder": "{primitive.brand.border}",
       "accent": "{primitive.brand.accentLight}"
     },
+    "navyGlow": "{primitive.navyGlow}",
     "status": {
       "success":  { "fg": "{primitive.status.ok.fg}",   "bg": "{primitive.status.ok.bg}",   "border": "{primitive.status.ok.border}" },
       "warning":  { "fg": "{primitive.status.warn.fg}", "bg": "{primitive.status.warn.bg}", "border": "{primitive.status.warn.border}" },
@@ -118,5 +126,13 @@
       "headerHeight": "56px", "filterbarHeight": "40px",
       "copilotWidth": "420px", "rowHeight": "40px"
     }
+  },
+
+  "clientTab": {
+    "$comment": "Top nav client-switcher tabs only. Deliberately outside komma.* — component-specific, not part of the general semantic scale. Mirrors CSS --client-tab-* (no --komma- prefix).",
+    "bg": "{primitive.clientTab.bg72}",
+    "menuBg": "{primitive.clientTab.bg92}",
+    "activeShadow": "{primitive.clientTab.shadowSm}",
+    "menuShadow": "{primitive.clientTab.shadowLg}"
   }
 }
