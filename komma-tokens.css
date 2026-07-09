@@ -43,6 +43,7 @@
   --p-brand-b:      #D6D6E0;
   --p-accent-light: #9B99C4;
   --p-navy-glow:    rgba(98,97,113,0.12);   /* #6261711F */
+  --p-brand-border-soft: rgba(41,40,62,0.16); /* #29283E29 */
 
   /* Client tab bar (component-specific alpha variants of --p-brand) */
   --p-client-tab-bg:            rgba(41,40,62,0.72); /* #29283Eb8 */
@@ -109,6 +110,7 @@
   --komma-action-primary-border:var(--p-brand-b);
   --komma-accent:               var(--p-accent-light);
   --komma-navy-glow:            var(--p-navy-glow);
+  --komma-action-tertiary-border: var(--p-brand-border-soft);
 
   /* --- Status (generic, used across ALL modules) --- */
   --komma-status-success:        var(--p-ok);

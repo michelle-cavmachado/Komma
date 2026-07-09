@@ -44,7 +44,12 @@ const variantStyles: Record<ButtonVariant, { base: React.CSSProperties; hover: R
     hover: { background: 'var(--komma-surface-muted)' },
   },
   tertiary: {
-    base: { background: 'var(--komma-navy-glow)', color: 'var(--komma-text-primary)' },
+    base: {
+      background: 'var(--komma-navy-glow)',
+      color: 'var(--komma-text-primary)',
+      borderColor: 'var(--komma-action-tertiary-border)',
+      borderRadius: 'var(--komma-radius-xl)',
+    },
     hover: { borderColor: 'var(--komma-border)' },
   },
   destructive: {

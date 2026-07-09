@@ -11,6 +11,7 @@
     "ink": { "t1": "#1E1E1D", "t2": "#6E6E6A", "ink90": "#2A2A28", "ink80": "#3B3B39", "light": "#C6C6C2" },
     "brand": { "base": "#29283E", "hover": "#1F1E30", "bg": "#ECECF1", "border": "#D6D6E0", "accentLight": "#9B99C4" },
     "navyGlow": "rgba(98,97,113,0.12)",
+    "brandBorderSoft": "rgba(41,40,62,0.16)",
     "clientTab": {
       "bg72":     "rgba(41,40,62,0.72)",
       "bg92":     "rgba(41,40,62,0.92)",
@@ -57,7 +58,8 @@
     "action": {
       "primary": "{primitive.brand.base}", "primaryHover": "{primitive.brand.hover}",
       "primaryBg": "{primitive.brand.bg}", "primaryBorder": "{primitive.brand.border}",
-      "accent": "{primitive.brand.accentLight}"
+      "accent": "{primitive.brand.accentLight}",
+      "tertiaryBorder": "{primitive.brandBorderSoft}"
     },
     "navyGlow": "{primitive.navyGlow}",
     "status": {
